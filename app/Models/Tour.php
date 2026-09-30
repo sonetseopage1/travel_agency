@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasImageUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Tour extends Model
 {
+    use HasImageUrl;
+
     /**
      * Valid tour categories. The `category` column is NOT NULL, so this list is
      * also the validation rule source for the admin forms.
@@ -112,6 +115,11 @@ class Tour extends Model
     public function getImageAttribute(): ?string
     {
         return $this->cover_image;
+    }
+
+    public function getImageUrlAttribute(): string
+    {
+        return self::resolveImageUrl($this->cover_image);
     }
 
     public function getLocationAttribute(): string

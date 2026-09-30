@@ -88,7 +88,7 @@
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                     <td class="px-5 py-4 font-medium">#{{ $tour->id }}</td>
                     <td class="px-5 py-4">
-                        <img src="{{ $tour->cover_image ?: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=100&q=80' }}"
+                        <img src="{{ $tour->image_url }}"
                              class="w-14 h-10 rounded-lg object-cover" alt="">
                     </td>
                     <td class="px-5 py-4 font-medium max-w-xs truncate">{{ $tour->title }}</td>
@@ -142,7 +142,7 @@
         @endphp
         <div class="p-5">
             <div class="flex gap-3">
-                <img src="{{ $tour->cover_image ?: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=100&q=80' }}"
+                <img src="{{ $tour->image_url }}"
                      class="w-20 h-16 rounded-xl object-cover" alt="">
                 <div class="flex-1 min-w-0">
                     <div class="flex items-start justify-between gap-2">

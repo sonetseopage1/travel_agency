@@ -69,7 +69,7 @@
                 <div
                     class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-xl transition">
                     <a href="{{ route('tours.show', $tour->slug ?? 'coxs-bazar') }}" class="block relative">
-                        <img src="{{ $tour->image ?? '' }}" alt="{{ $tour->title ?? '' }}"
+                        <img src="{{ $tour->image_url }}" alt="{{ $tour->title ?? '' }}"
                             class="w-full h-56 object-cover">
                         <div class="absolute top-4 left-4 flex gap-2">
                             @if ($tour->is_international ?? false)

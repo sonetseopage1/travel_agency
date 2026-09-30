@@ -31,12 +31,12 @@ class TourSeeder extends Seeder
                 'current_booked' => 18,
                 'status' => 'published',
                 'is_featured' => true,
-                'cover_image' => 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80',
+                'cover_image' => 'images/photo-1548013146-72479768bada.jpg',
                 'gallery' => [
-                    'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=900&q=80',
+                    'images/photo-1548013146-72479768bada.jpg',
+                    'images/photo-1507525428034-b723cf961d3e.jpg',
+                    'images/photo-1500530855697-b586d89ba3ee.jpg',
+                    'images/photo-1602216056096-3b40cc0c9944.jpg',
                 ],
                 'itinerary' => [
                     [
@@ -139,12 +139,12 @@ class TourSeeder extends Seeder
                 'current_booked' => 15,
                 'status' => 'published',
                 'is_featured' => true,
-                'cover_image' => 'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=900&q=80',
+                'cover_image' => 'images/photo-1570789210967-2cac24afeb00.jpg',
                 'gallery' => [
-                    'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1609947017136-9daf32a5eb16?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
+                    'images/photo-1570789210967-2cac24afeb00.jpg',
+                    'images/photo-1609947017136-9daf32a5eb16.jpg',
+                    'images/photo-1469474968028-56623f02e42e.jpg',
+                    'images/photo-1500530855697-b586d89ba3ee.jpg',
                 ],
                 'itinerary' => [
                     [
@@ -257,13 +257,13 @@ class TourSeeder extends Seeder
                 'current_booked' => 12,
                 'status' => 'published',
                 'is_featured' => true,
-                'cover_image' => 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=900&q=80',
+                'cover_image' => 'images/photo-1602216056096-3b40cc0c9944.jpg',
                 'gallery' => [
-                    'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
+                    'images/photo-1602216056096-3b40cc0c9944.jpg',
+                    'images/photo-1548013146-72479768bada.jpg',
+                    'images/photo-1507525428034-b723cf961d3e.jpg',
+                    'images/photo-1596895111956-bf1cf0599ce5.jpg',
+                    'images/photo-1500530855697-b586d89ba3ee.jpg',
                 ],
                 'itinerary' => [
                     [
@@ -389,12 +389,12 @@ class TourSeeder extends Seeder
                 'current_booked' => 8,
                 'status' => 'published',
                 'is_featured' => false,
-                'cover_image' => 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
+                'cover_image' => 'images/photo-1469474968028-56623f02e42e.jpg',
                 'gallery' => [
-                    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=900&q=80',
+                    'images/photo-1469474968028-56623f02e42e.jpg',
+                    'images/photo-1596895111956-bf1cf0599ce5.jpg',
+                    'images/photo-1500530855697-b586d89ba3ee.jpg',
+                    'images/photo-1570789210967-2cac24afeb00.jpg',
                 ],
                 'itinerary' => [
                     [
@@ -499,12 +499,12 @@ class TourSeeder extends Seeder
                 'current_booked' => 10,
                 'status' => 'published',
                 'is_featured' => false,
-                'cover_image' => 'https://images.unsplash.com/photo-1609947017136-9daf32a5eb16?auto=format&fit=crop&w=900&q=80',
+                'cover_image' => 'images/photo-1609947017136-9daf32a5eb16.jpg',
                 'gallery' => [
-                    'https://images.unsplash.com/photo-1609947017136-9daf32a5eb16?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
+                    'images/photo-1609947017136-9daf32a5eb16.jpg',
+                    'images/photo-1570789210967-2cac24afeb00.jpg',
+                    'images/photo-1469474968028-56623f02e42e.jpg',
+                    'images/photo-1500530855697-b586d89ba3ee.jpg',
                 ],
                 'itinerary' => [
                     [
@@ -612,12 +612,12 @@ class TourSeeder extends Seeder
                 'current_booked' => 14,
                 'status' => 'published',
                 'is_featured' => false,
-                'cover_image' => 'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=900&q=80',
+                'cover_image' => 'images/photo-1596895111956-bf1cf0599ce5.jpg',
                 'gallery' => [
-                    'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1570789210967-2cac24afeb00?auto=format&fit=crop&w=900&q=80',
+                    'images/photo-1596895111956-bf1cf0599ce5.jpg',
+                    'images/photo-1469474968028-56623f02e42e.jpg',
+                    'images/photo-1500530855697-b586d89ba3ee.jpg',
+                    'images/photo-1570789210967-2cac24afeb00.jpg',
                 ],
                 'itinerary' => [
                     [
@@ -716,13 +716,13 @@ class TourSeeder extends Seeder
                 'current_booked' => 22,
                 'status' => 'published',
                 'is_featured' => false,
-                'cover_image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
+                'cover_image' => 'images/photo-1507525428034-b723cf961d3e.jpg',
                 'gallery' => [
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
+                    'images/photo-1507525428034-b723cf961d3e.jpg',
+                    'images/photo-1548013146-72479768bada.jpg',
+                    'images/photo-1602216056096-3b40cc0c9944.jpg',
+                    'images/photo-1596895111956-bf1cf0599ce5.jpg',
+                    'images/photo-1500530855697-b586d89ba3ee.jpg',
                 ],
                 'itinerary' => [
                     [
@@ -854,12 +854,12 @@ class TourSeeder extends Seeder
                 'current_booked' => 42,
                 'status' => 'published',
                 'is_featured' => false,
-                'cover_image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
+                'cover_image' => 'images/photo-1507525428034-b723cf961d3e.jpg',
                 'gallery' => [
-                    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1596895111956-bf1cf0599ce5?auto=format&fit=crop&w=900&q=80',
-                    'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=900&q=80',
+                    'images/photo-1507525428034-b723cf961d3e.jpg',
+                    'images/photo-1548013146-72479768bada.jpg',
+                    'images/photo-1596895111956-bf1cf0599ce5.jpg',
+                    'images/photo-1602216056096-3b40cc0c9944.jpg',
                 ],
                 'itinerary' => [
                     [

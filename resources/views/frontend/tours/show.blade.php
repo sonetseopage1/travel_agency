@@ -14,7 +14,7 @@
     @endphp
 
     <section class="relative h-[70vh] min-h-[420px] flex items-end overflow-hidden">
-        <img src="{{ $tour->image ?? '' }}" alt="{{ $tour->title ?? '' }}" class="absolute inset-0 w-full h-full object-cover">
+        <img src="{{ $tour->image_url }}" alt="{{ $tour->title ?? '' }}" class="absolute inset-0 w-full h-full object-cover">
         <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>
 
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-14">
@@ -137,11 +137,11 @@
                     </div>
                 @endif
 
-                @if (! empty($tour->gallery_images))
+                @if (! empty($tour->gallery_urls))
                     <div>
                         <h2 class="text-2xl font-extrabold">গ্যালারি</h2>
                         <div class="grid grid-cols-2 gap-4 mt-6">
-                            @foreach ($tour->gallery_images as $image)
+                            @foreach ($tour->gallery_urls as $image)
                                 <img src="{{ $image }}" alt="Gallery" class="rounded-2xl w-full h-52 object-cover">
                             @endforeach
                         </div>
@@ -233,7 +233,7 @@
                     @foreach ($relatedTours as $related)
                         <div class="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
                             <a href="{{ route('tours.show', $related->slug ?? '') }}">
-                                <img src="{{ $related->image ?? '' }}" alt="{{ $related->title ?? '' }}"
+                                <img src="{{ $related->image_url }}" alt="{{ $related->title ?? '' }}"
                                     class="w-full h-48 object-cover">
                             </a>
                             <div class="p-5">

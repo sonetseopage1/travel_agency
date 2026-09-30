@@ -123,7 +123,7 @@
             @foreach($upcomingTours as $tour)
             <div class="p-5 flex flex-col sm:flex-row gap-4">
                 @php
-                    $img = $tour->cover_image ?: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=300&q=80';
+                    $img = $tour->image_url;
                     $slotPercent = $tour->max_slots > 0 ? (($tour->current_booked ?? 0) / $tour->max_slots) * 100 : 0;
                     if ($tour->status === 'published' && $slotPercent >= 90) {
                         $badgeClass = 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400';

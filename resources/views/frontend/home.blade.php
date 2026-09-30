@@ -5,7 +5,7 @@
 @section('content')
 
     <section class="relative h-screen min-h-[600px] flex items-center overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=85"
+        <img src="{{ asset('images/photo-1507525428034-b723cf961d3e.jpg') }}"
             alt="Hero" class="absolute inset-0 w-full h-full object-cover">
         <div class="absolute inset-0 hero-overlay"></div>
 
@@ -54,7 +54,7 @@
                 <div
                     class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800 hover:shadow-xl transition">
                     <a href="{{ route('tours.show', $tour->slug ?? 'coxs-bazar') }}" class="block relative">
-                        <img src="{{ $tour->image ?? '' }}" alt="{{ $tour->title ?? '' }}"
+                        <img src="{{ $tour->image_url }}" alt="{{ $tour->title ?? '' }}"
                             class="w-full h-56 object-cover">
                         <div class="absolute top-4 left-4 flex gap-2">
                             @if ($tour->is_international ?? false)
@@ -115,7 +115,7 @@
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach ($destinations as $destination)
                     <div class="group relative h-64 rounded-2xl overflow-hidden cursor-pointer">
-                        <img src="{{ $destination->image ?? '' }}" alt="{{ $destination->name ?? '' }}"
+                        <img src="{{ $destination->image_url }}" alt="{{ $destination->name ?? '' }}"
                             class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                         <div class="absolute bottom-0 p-6 text-white">
@@ -152,7 +152,7 @@
                     </div>
                 </div>
             </div>
-            <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1000&q=80"
+            <img src="{{ asset('images/photo-1469474968028-56623f02e42e.jpg') }}"
                 alt="About" class="rounded-3xl w-full h-96 object-cover">
         </div>
     </section>

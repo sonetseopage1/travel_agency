@@ -207,30 +207,7 @@
         </section>
 
         <section data-tab-section="media" class="tab-section bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 sm:p-7 hidden">
-            <div class="mb-6">
-                <h2 class="text-lg font-extrabold">Cover Image</h2>
-                <p class="text-xs text-slate-500 mt-1">Cover image URL দিন বা upload করুন।</p>
-            </div>
-            <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-5">
-                <label class="label">Cover Image URL</label>
-                <input type="text" name="cover_image" id="coverImgInput" placeholder="https://..." class="input mb-4" value="{{ old('cover_image') }}" oninput="previewCover(this.value)">
-                <div id="coverPreviewWrap" class="relative h-48 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 {{ old('cover_image') ? '' : 'hidden' }}">
-                    <img id="coverPreview" src="{{ old('cover_image') }}" class="w-full h-full object-cover" alt="">
-                    <button type="button" onclick="clearCover()" class="absolute top-3 right-3 w-9 h-9 rounded-xl bg-black/60 text-white">×</button>
-                </div>
-                <div id="coverPlaceholder" class="flex flex-col items-center justify-center h-48 rounded-xl bg-slate-50 dark:bg-slate-800/50 text-slate-400 {{ old('cover_image') ? 'hidden' : '' }}">
-                    <div class="text-4xl mb-2">🖼️</div>
-                    <p class="text-sm">Cover image preview এখানে দেখাবে</p>
-                </div>
-            </div>
-
-            <div class="mt-8">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-extrabold">Gallery</h2>
-                    <button type="button" onclick="addGallery()" class="text-teal-700 text-sm font-bold">+ Add</button>
-                </div>
-                <div id="galleryContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
-            </div>
+            @include('admin.tours.partials.image-uploader', ['tour' => null])
         </section>
 
     </div>
@@ -354,24 +331,6 @@
         document.getElementById('availableSlots').textContent = Math.max(0, max - cur);
     }
 
-    function previewCover(url) {
-        const wrap = document.getElementById('coverPreviewWrap');
-        const ph = document.getElementById('coverPlaceholder');
-        const img = document.getElementById('coverPreview');
-        if (url) {
-            img.src = url;
-            wrap.classList.remove('hidden');
-            ph.classList.add('hidden');
-        } else {
-            wrap.classList.add('hidden');
-            ph.classList.remove('hidden');
-        }
-    }
-    function clearCover() {
-        document.getElementById('coverImgInput').value = '';
-        previewCover('');
-    }
-
     const iconOptions = ['📍','🚌','🍛','🏨','🌊','🚤','🏝️','🛍️','🌅','🍳','🗼','🎭'];
     let dayCounter = 0;
 
@@ -484,20 +443,6 @@
                 inp.name = `faqs[${i}][${j===0?'question':'answer'}]`;
             });
         });
-    }
-
-    function addGallery(prefill='') {
-        const c = document.getElementById('galleryContainer');
-        const idx = c.children.length;
-        const div = document.createElement('div');
-        div.className = 'relative';
-        div.innerHTML = `
-            <div class="border border-slate-200 dark:border-slate-700 rounded-xl p-3">
-                <img src="${prefill}" class="w-full h-24 object-cover rounded-lg mb-2 ${prefill?'':'hidden'}" onerror="this.classList.add('hidden')" onload="this.classList.remove('hidden')">
-                <input type="text" name="gallery_urls[]" value="${prefill}" placeholder="Image URL" class="input text-xs mb-2" oninput="this.previousElementSibling.src=this.value">
-                <button type="button" onclick="this.closest('.relative').remove()" class="w-full py-2 rounded-lg bg-red-50 dark:bg-red-950 text-red-600 text-xs">Remove</button>
-            </div>`;
-        c.appendChild(div);
     }
 
     addDay();

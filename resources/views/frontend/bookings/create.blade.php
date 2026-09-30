@@ -128,7 +128,7 @@
             <aside class="lg:sticky lg:top-28 h-fit">
                 <div
                     class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-lg">
-                    <img src="{{ $tour->image ?? '' }}" alt="{{ $tour->title ?? '' }}" class="w-full h-48 object-cover">
+                    <img src="{{ $tour->image_url }}" alt="{{ $tour->title ?? '' }}" class="w-full h-48 object-cover">
                     <div class="p-7">
                         <p class="text-sm text-teal-700 font-semibold">📍 {{ $tour->location ?? '' }}</p>
                         <h2 class="font-bold text-lg mt-2 leading-7">{{ $tour->title ?? '' }}</h2>

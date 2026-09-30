@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Tour;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+
+/**
+ * Stores tour images inside public/images so they ship with the repository and
+ * are servable without a storage symlink.
+ *
+ * The database always holds a path relative to the public directory
+ * (e.g. "images/cover-coxs-bazar-1712-ab12cd.jpg"), never an absolute URL.
+ */
+class TourImageService
+{
+    public const DIRECTORY = 'images';
+
+    public const MAX_GALLERY_IMAGES = 12;
+
+    /**
+     * Persist a single uploaded image and return its relative path.
+     */
+    public function store(UploadedFile $file, string $prefix = 'image'): string
+    {
+        $directory = public_path(self::DIRECTORY);
+
+        File::ensureDirectoryExists($directory);
+
+        $name = $this->uniqueName($file, $prefix);
+
+        $file->move($directory, $name);
+
+        return self::DIRECTORY.'/'.$name;
+    }
+
+    /**
+     * Persist many uploaded images, skipping any beyond the gallery limit.
+     *
+     * @param  array<int, UploadedFile>  $files
+     * @return array<int, string>
+     */
+    public function storeMany(array $files, string $prefix = 'gallery', ?int $limit = null): array
+    {
+        $limit ??= self::MAX_GALLERY_IMAGES;
+        $paths = [];
+
+        foreach ($files as $file) {
+            if (count($paths) >= $limit) {
+                break;
+            }
+
+            if ($file instanceof UploadedFile && $file->isValid()) {
+                $paths[] = $this->store($file, $prefix);
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Delete a stored image. Remote URLs and paths outside public/images are
+     * left alone so this is always safe to call on existing data.
+     */
+    public function delete(?string $path): void
+    {
+        if (! Tour::isLocalImage($path)) {
+            return;
+        }
+
+        $absolute = public_path(str_replace('/', DIRECTORY_SEPARATOR, $path));
+
+        // Guard against any path that escapes the images directory.
+        $imagesRoot = realpath(public_path(self::DIRECTORY));
+
+        if ($imagesRoot === false || ! str_starts_with(realpath($absolute) ?: $absolute, $imagesRoot)) {
+            return;
+        }
+
+        if (is_file($absolute)) {
+            File::delete($absolute);
+        }
+    }
+
+    /**
+     * @param  array<int, string>  $paths
+     */
+    public function deleteMany(array $paths): void
+    {
+        foreach ($paths as $path) {
+            $this->delete(is_string($path) ? $path : null);
+        }
+    }
+
+    /**
+     * Build a collision-proof, human-readable filename.
+     */
+    private function uniqueName(UploadedFile $file, string $prefix): string
+    {
+        $base = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) ?: 'image';
+        $base = Str::limit($base, 40, '');
+
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        if ($extension === '') {
+            $extension = $file->guessExtension() ?: 'jpg';
+        }
+
+        $suffix = substr(bin2hex(random_bytes(4)), 0, 8);
+
+        return $prefix.'-'.$base.'-'.$suffix.'.'.$extension;
+    }
+}
