@@ -27,6 +27,15 @@ class Tour extends Model
     ];
 
     /**
+     * Valid publication states. Shared by the admin filter, the status
+     * dropdowns on the create/edit forms and the validation rules, so all
+     * three always agree.
+     *
+     * @var list<string>
+     */
+    public const STATUSES = ['draft', 'published', 'unpublished', 'completed'];
+
+    /**
      * Suggestions offered by the admin transport field.
      *
      * This is guidance only, not a whitelist: the column stores free text so a

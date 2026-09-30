@@ -6,6 +6,12 @@
 
 @section('content')
 
+@if (session('success'))
+    <div class="mb-5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-sm px-4 py-3">
+        {{ session('success') }}
+    </div>
+@endif
+
 @if ($errors->any())
     <div class="mb-5 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm px-4 py-3">
         <p class="font-semibold mb-1">নিচের বিষয়গুলো ঠিক করতে হবে:</p>
@@ -244,10 +250,9 @@
             <div class="mt-5">
                 <label class="label">Status</label>
                 <select name="status" class="input">
-                    <option value="draft" {{ old('status')=='draft'?'selected':'' }}>Draft</option>
-                    <option value="published" {{ old('status')=='published'?'selected':'' }}>Published</option>
-                    <option value="unpublished" {{ old('status')=='unpublished'?'selected':'' }}>Unpublished</option>
-                    <option value="completed" {{ old('status')=='completed'?'selected':'' }}>Completed</option>
+                    @foreach (\App\Models\Tour::STATUSES as $option)
+                        <option value="{{ $option }}" @selected(old('status') === $option)>{{ ucfirst($option) }}</option>
+                    @endforeach
                 </select>
             </div>
             <div class="mt-5">

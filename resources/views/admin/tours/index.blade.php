@@ -19,42 +19,85 @@
     </div>
 </div>
 
-<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 mb-5">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+@php
+    $hasFilter = request()->filled('search') || request()->filled('status') || request()->filled('category') || request()->filled('destination');
+@endphp
+
+<form method="GET" action="{{ route('admin.tours.index') }}"
+    class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 mb-5">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <div>
-            <label class="small-label">Search</label>
+            <label class="small-label" for="tour_search">Search</label>
             <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
-                <input type="text" placeholder="Search tours..." class="input pl-10" value="{{ request('search') }}">
+                <input id="tour_search" type="text" name="search" placeholder="Search tours..."
+                    class="input pl-10" value="{{ request('search') }}">
             </div>
         </div>
         <div>
-            <label class="small-label">Status</label>
-            <select class="input">
+            <label class="small-label" for="tour_status">Status</label>
+            <select id="tour_status" name="status" class="input">
                 <option value="">All Status</option>
-                <option>Draft</option>
-                <option>Published</option>
-                <option>Unpublished</option>
-                <option>Completed</option>
+                @foreach (\App\Models\Tour::STATUSES as $option)
+                    <option value="{{ $option }}" @selected(request('status') === $option)>
+                        {{ ucfirst($option) }}
+                    </option>
+                @endforeach
             </select>
         </div>
         <div>
-            <label class="small-label">Category</label>
-            <select class="input">
+            <label class="small-label" for="tour_category">Category</label>
+            <select id="tour_category" name="category" class="input">
                 <option value="">All Categories</option>
-                <option>Beach</option>
-                <option>Adventure</option>
-                <option>Nature</option>
-                <option>Historical</option>
-                <option>International</option>
-                <option>Family</option>
+                @foreach (\App\Models\Tour::CATEGORIES as $option)
+                    <option value="{{ $option }}" @selected(request('category') === $option)>
+                        {{ ucfirst($option) }}
+                    </option>
+                @endforeach
             </select>
         </div>
-        <div class="flex items-end">
-            <button class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-sm font-semibold">
+        <div>
+            <label class="small-label" for="tour_destination">Destination</label>
+            <select id="tour_destination" name="destination" class="input">
+                <option value="">All Destinations</option>
+                @foreach ($destinations as $option)
+                    <option value="{{ $option }}" @selected(request('destination') === $option)>
+                        {{ $option }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="flex items-end gap-2">
+            <button type="submit"
+                class="flex-1 px-4 py-3 rounded-xl bg-slate-800 dark:bg-slate-700 text-white text-sm font-semibold hover:bg-slate-700 transition">
                 Apply Filters
             </button>
+            @if ($hasFilter)
+                <a href="{{ route('admin.tours.index') }}" title="রিসেট"
+                    class="px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                    ✕
+                </a>
+            @endif
         </div>
+    </div>
+</form>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
+        <p class="text-xs text-slate-500">Total Tours</p>
+        <p class="text-xl font-bold mt-1">{{ $totalCount }}</p>
+    </div>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
+        <p class="text-xs text-slate-500">Published</p>
+        <p class="text-xl font-bold mt-1 text-emerald-600">{{ $publishedCount }}</p>
+    </div>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
+        <p class="text-xs text-slate-500">Drafts</p>
+        <p class="text-xl font-bold mt-1 text-amber-600">{{ $draftCount }}</p>
+    </div>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
+        <p class="text-xs text-slate-500">Matching Filter</p>
+        <p class="text-xl font-bold mt-1 text-teal-600">{{ $tours->total() }}</p>
     </div>
 </div>
 

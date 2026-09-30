@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tour;
 use App\Services\TourImageService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -48,9 +49,16 @@ class TourController extends Controller
     {
         $query = Tour::query();
 
-        if ($search = $request->input('search')) {
-            $query->where('title', 'like', "%{$search}%")
-                ->orWhere('destination', 'like', "%{$search}%");
+        // Grouped so the status and category filters below narrow the search
+        // results too. Un-grouped, SQL binds AND tighter than OR and those
+        // filters are silently ignored.
+        if ($search = trim((string) $request->input('search'))) {
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                    ->orWhere('short_title', 'like', "%{$search}%")
+                    ->orWhere('destination', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%");
+            });
         }
 
         if ($status = $request->input('status')) {
@@ -61,9 +69,30 @@ class TourController extends Controller
             $query->where('category', $category);
         }
 
-        $tours = $query->latest()->paginate(20);
+        if ($destination = $request->input('destination')) {
+            $query->where('destination', 'like', "%{$destination}%");
+        }
 
-        return view('admin.tours.index', compact('tours'));
+        // withQueryString keeps the active filters when moving to page 2+.
+        $tours = $query->latest()->paginate(20)->withQueryString();
+
+        $totalCount = Tour::count();
+        $publishedCount = Tour::where('status', 'published')->count();
+        $draftCount = Tour::where('status', 'draft')->count();
+
+        $destinations = Tour::query()
+            ->whereNotNull('destination')
+            ->distinct()
+            ->orderBy('destination')
+            ->pluck('destination');
+
+        return view('admin.tours.index', compact(
+            'tours',
+            'totalCount',
+            'publishedCount',
+            'draftCount',
+            'destinations',
+        ));
     }
 
     public function create()
@@ -107,7 +136,7 @@ class TourController extends Controller
             'price_per_person' => 'nullable|numeric|min:0',
             'max_slots' => 'nullable|integer|min:1',
             'current_booked' => 'nullable|integer|min:0',
-            'status' => 'nullable|in:draft,published,unpublished,completed',
+            'status' => ['nullable', Rule::in(Tour::STATUSES)],
             'is_featured' => 'nullable|boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_keywords' => 'nullable|string|max:255',
@@ -200,7 +229,7 @@ class TourController extends Controller
             'price_per_person' => 'nullable|numeric|min:0',
             'max_slots' => 'nullable|integer|min:1',
             'current_booked' => 'nullable|integer|min:0',
-            'status' => 'nullable|in:draft,published,unpublished,completed',
+            'status' => ['nullable', Rule::in(Tour::STATUSES)],
             'is_featured' => 'nullable|boolean',
             'meta_title' => 'nullable|string|max:255',
             'meta_keywords' => 'nullable|string|max:255',
