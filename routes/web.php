@@ -22,7 +22,7 @@ Route::post('/contact', [HomeController::class, 'contactSubmit'])->name('contact
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('tours', AdminTourController::class);
-    Route::resource('bookings', AdminBookingController::class)->except(['create', 'store', 'edit', 'update', 'destroy']);
+    Route::resource('bookings', AdminBookingController::class)->except(['edit', 'update', 'destroy']);
     Route::patch('bookings/{id}/status', [AdminBookingController::class, 'updateStatus'])->name('bookings.status');
     Route::resource('reviews', AdminReviewController::class);
     Route::post('reviews/{id}/toggle', [AdminReviewController::class, 'toggleApproval'])->name('reviews.toggle');

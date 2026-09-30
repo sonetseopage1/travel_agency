@@ -31,6 +31,10 @@
         <p class="text-sm text-slate-500 mt-1">সব booking এখান থেকে manage করুন।</p>
     </div>
     <div class="flex gap-2">
+        <a href="{{ route('admin.bookings.create') }}"
+            class="px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-sm font-semibold whitespace-nowrap transition">
+            + নতুন বুকিং
+        </a>
         <input type="text" placeholder="Search customer, tour..." class="input w-full sm:w-64">
         <select class="input w-full sm:w-40">
             <option>All Status</option>
