@@ -1,6 +1,9 @@
 @extends('layouts.frontend')
 
-@section('title', ($tour->title ?? 'ট্যুর') . ' — ভ্রমণবিলাস')
+@section('title', ($tour->title ?? 'ট্যুর').' — '.\App\Models\Setting::string('site_name'))
+
+@section('og_title', ($tour->title ?? \App\Models\Setting::string('site_name')).' — '.\App\Models\Setting::string('site_name'))
+@section('og_description', \Illuminate\Support\Str::limit(strip_tags((string) ($tour->description ?? '')), 200))
 
 @section('body-class', 'pb-24 lg:pb-0')
 

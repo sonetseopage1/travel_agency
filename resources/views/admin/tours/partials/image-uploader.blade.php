@@ -23,6 +23,13 @@
     <input type="file" id="coverInput" name="cover_image" accept="{{ $accept }}" class="hidden">
     <input type="hidden" name="remove_cover" id="removeCoverFlag" value="0">
 
+    @error('cover_image')
+        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+    @enderror
+    @error('remove_cover')
+        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+    @enderror
+
     <div id="coverZone"
         class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-5 cursor-pointer hover:border-teal-500 transition-colors">
         <div class="text-center py-6">
@@ -61,6 +68,13 @@
             </span>
         </div>
     </div>
+
+    @error('gallery_files')
+        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+    @enderror
+    @error('gallery_files.*')
+        <p class="mt-2 text-sm text-red-500">{{ $message }}</p>
+    @enderror
 
     <input type="file" id="galleryInput" name="gallery_files[]" accept="{{ $accept }}" multiple class="hidden">
 

@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', 'রেজিস্ট্রেশন — ভ্রমণবিলাস')
+@section('title', 'রেজিস্ট্রেশন — '.\App\Models\Setting::string('site_name'))
 
 @section('content')
     <div class="min-h-screen flex items-center justify-center px-4 pt-28 pb-16">

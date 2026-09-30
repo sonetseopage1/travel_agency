@@ -286,10 +286,12 @@ class TourController extends Controller
 
         $tour->save();
 
-        // Only unlink files this tour no longer references.
+        // Only unlink files this tour no longer references. Anything dropped from
+        // the gallery counts, not just what was explicitly flagged, so a partial
+        // existing_gallery payload cannot leave files behind on disk.
         $orphans = array_merge(
             $coverReplaced || $request->boolean('remove_cover') ? [$oldCover] : [],
-            array_values(array_intersect($oldGallery, $removed))
+            array_values(array_diff($oldGallery, $kept))
         );
 
         $this->images->deleteMany(array_filter($orphans));

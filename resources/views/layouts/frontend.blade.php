@@ -2,9 +2,48 @@
 <html lang="bn" class="scroll-smooth">
 
 <head>
+    @php
+        $siteName = \App\Models\Setting::string('site_name');
+        $metaTitle = \App\Models\Setting::string('meta_title') ?: $siteName.' — বাংলাদেশের সেরা ট্যুর ও ট্রাভেল প্যাকেজ';
+        $metaDescription = \App\Models\Setting::string('meta_description') ?: \App\Models\Setting::string('site_intro');
+        $metaKeywords = \App\Models\Setting::string('meta_keywords');
+        $ogTitle = \App\Models\Setting::string('og_title') ?: $metaTitle;
+        $ogDescription = \App\Models\Setting::string('og_description') ?: $metaDescription;
+        $favicon = \App\Models\Setting::image('favicon');
+        $ogImage = \App\Models\Setting::image('og_image');
+    @endphp
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'ভ্রমণবিলাস — বাংলাদেশের সেরা ট্যুর ও ট্রাভেল প্যাকেজ')</title>
+    <title>@yield('title', $metaTitle)</title>
+
+    <meta name="description" content="{{ $metaDescription }}">
+    @if ($metaKeywords)
+        <meta name="keywords" content="{{ $metaKeywords }}">
+    @endif
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:title" content="@yield('og_title', $ogTitle)">
+    <meta property="og:description" content="@yield('og_description', $ogDescription)">
+    <meta property="og:url" content="{{ url()->current() }}">
+    @if ($ogImage)
+        <meta property="og:image" content="{{ $ogImage }}">
+    @endif
+
+    <meta name="twitter:card" content="{{ $ogImage ? 'summary_large_image' : 'summary' }}">
+    <meta name="twitter:title" content="@yield('og_title', $ogTitle)">
+    <meta name="twitter:description" content="@yield('og_description', $ogDescription)">
+    @if ($ogImage)
+        <meta name="twitter:image" content="{{ $ogImage }}">
+    @endif
+
+    @if ($favicon)
+        <link rel="icon" href="{{ $favicon }}">
+    @else
+        <link rel="icon" href="{{ asset('images/placeholder.svg') }}">
+    @endif
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -90,18 +129,27 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="h-20 flex items-center justify-between">
                     <a href="{{ route('home') }}" class="flex items-center gap-2">
-                        <div
-                            class="w-11 h-11 rounded-2xl bg-teal-700 text-white
-                                   flex items-center justify-center text-xl">
-                            ✈
-                        </div>
+                        @php $headerLogo = \App\Models\Setting::image('logo'); @endphp
+                        @if ($headerLogo)
+                            <div class="w-11 h-11 rounded-2xl overflow-hidden flex items-center justify-center">
+                                <img src="{{ $headerLogo }}" alt="{{ $siteName }}" class="w-full h-full object-contain">
+                            </div>
+                        @else
+                            <div
+                                class="w-11 h-11 rounded-2xl bg-teal-700 text-white
+                                       flex items-center justify-center text-xl">
+                                ✈
+                            </div>
+                        @endif
                         <div>
                             <div class="text-xl font-extrabold text-teal-700">
-                                ভ্রমণবিলাস
+                                {{ $siteName }}
                             </div>
-                            <div class="text-[10px] text-slate-500">
-                                Travel • Explore • Memories
-                            </div>
+                            @if (\App\Models\Setting::string('site_tagline'))
+                                <div class="text-[10px] text-slate-500">
+                                    {{ \App\Models\Setting::string('site_tagline') }}
+                                </div>
+                            @endif
                         </div>
                     </a>
                     <div class="hidden lg:flex items-center gap-8 text-sm font-semibold">
@@ -220,13 +268,72 @@
     <footer class="bg-slate-900 text-white pt-16 pb-8">
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid md:grid-cols-4 gap-10">
+                @php
+                    $footerLogo = \App\Models\Setting::image('logo');
+                    $socialLinks = array_filter([
+                        'facebook' => \App\Models\Setting::string('social_facebook'),
+                        'instagram' => \App\Models\Setting::string('social_instagram'),
+                        'youtube' => \App\Models\Setting::string('social_youtube'),
+                        'twitter' => \App\Models\Setting::string('social_twitter'),
+                        'linkedin' => \App\Models\Setting::string('social_linkedin'),
+                    ]);
+                    $socialIcons = [
+                        'facebook' => '📘',
+                        'instagram' => '📷',
+                        'youtube' => '▶️',
+                        'twitter' => '🐦',
+                        'linkedin' => '💼',
+                    ];
+                    $contactAddress = \App\Models\Setting::string('contact_address');
+                    $contactPhone = \App\Models\Setting::string('contact_phone');
+                    $contactEmail = \App\Models\Setting::string('contact_email');
+                @endphp
+
                 <div>
-                    <div class="text-2xl font-extrabold">
-                        ✈ ভ্রমণবিলাস
+                    <div class="flex items-center gap-3">
+                        @if ($footerLogo)
+                            <div class="w-11 h-11 rounded-2xl overflow-hidden flex items-center justify-center bg-white shrink-0">
+                                <img src="{{ $footerLogo }}" alt="{{ $siteName }}" class="w-full h-full object-contain">
+                            </div>
+                        @else
+                            <div class="w-11 h-11 rounded-2xl bg-teal-700 flex items-center justify-center text-xl shrink-0">✈</div>
+                        @endif
+                        <div class="text-2xl font-extrabold">{{ $siteName }}</div>
                     </div>
-                    <p class="text-slate-400 mt-4 leading-7">
-                        ভ্রমণ হোক সহজ, সুন্দর এবং স্মরণীয়।
-                    </p>
+
+                    @if (\App\Models\Setting::string('site_intro'))
+                        <p class="text-slate-400 mt-4 leading-7">
+                            {{ \App\Models\Setting::string('site_intro') }}
+                        </p>
+                    @endif
+
+                    @if ($socialLinks)
+                        <div class="flex gap-2 mt-5">
+                            @foreach ($socialLinks as $network => $link)
+                                <a href="{{ $link }}" target="_blank" rel="noopener noreferrer"
+                                    title="{{ ucfirst($network) }}" aria-label="{{ ucfirst($network) }}"
+                                    class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-teal-700 flex items-center justify-center text-sm transition">
+                                    {{ $socialIcons[$network] }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <div class="mt-5 space-y-1.5 text-slate-400 text-sm">
+                        @if ($contactAddress)
+                            <p>{{ $contactAddress }}</p>
+                        @endif
+                        @if ($contactPhone)
+                            <p>
+                                <a href="tel:{{ preg_replace('/\s+/', '', $contactPhone) }}" class="hover:text-white">{{ $contactPhone }}</a>
+                            </p>
+                        @endif
+                        @if ($contactEmail)
+                            <p>
+                                <a href="mailto:{{ $contactEmail }}" class="hover:text-white">{{ $contactEmail }}</a>
+                            </p>
+                        @endif
+                    </div>
                 </div>
                 <div>
                     <h3 class="font-bold mb-4">
@@ -279,7 +386,7 @@
             <div
                 class="border-t border-slate-800 mt-12 pt-6
                        text-center text-sm text-slate-500">
-                © 2026 ভ্রমণবিলাস. All rights reserved.
+                © {{ date('Y') }} {{ $siteName }}. {{ \App\Models\Setting::string('footer_note') ?: 'All rights reserved.' }}
             </div>
         </div>
     </footer>

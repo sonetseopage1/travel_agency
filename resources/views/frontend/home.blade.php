@@ -1,7 +1,5 @@
 @extends('layouts.frontend')
 
-@section('title', 'ভ্রমণবিলাস — বাংলাদেশের সেরা ট্যুর ও ট্রাভেল প্যাকেজ')
-
 @section('content')
 
     <section class="relative h-screen min-h-[600px] flex items-center overflow-hidden">
@@ -133,7 +131,7 @@
             <div>
                 <h2 class="text-3xl sm:text-4xl font-extrabold">আমাদের সম্পর্কে</h2>
                 <p class="text-slate-600 dark:text-slate-300 mt-5 leading-8">
-                    ভ্রমণবিলাস একটি বাংলাদেশি ট্রাভেল অপারেটর। আমরা মানুষকে সহজ, নিরাপদ এবং স্মরণীয় ভ্রমণ
+                    {{ \App\Models\Setting::string('site_name') }} একটি বাংলাদেশি ট্রাভেল অপারেটর। আমরা মানুষকে সহজ, নিরাপদ এবং স্মরণীয় ভ্রমণ
                     উপভোগ করিয়ে দেওয়াই আমাদের লক্ষ্য। প্রতিটি ট্যুর আমাদের টিম কর্তৃক পরীক্ষিত এবং
                     customer-এর জন্য নিরাপদ হিসেবে তৈরি।
                 </p>
@@ -196,9 +194,15 @@
                     আমরা দ্রুত উত্তর দেব।
                 </p>
                 <div class="space-y-4 mt-8 text-slate-600 dark:text-slate-300">
-                    <p>📍 ঢাকা, বাংলাদেশ</p>
-                    <p>📞 +880 1700 000000</p>
-                    <p>✉️ hello@bongotraveller.com</p>
+                    @if (\App\Models\Setting::string('contact_address'))
+                        <p>📍 {{ \App\Models\Setting::string('contact_address') }}</p>
+                    @endif
+                    @if (\App\Models\Setting::string('contact_phone'))
+                        <p>📞 {{ \App\Models\Setting::string('contact_phone') }}</p>
+                    @endif
+                    @if (\App\Models\Setting::string('contact_email'))
+                        <p>✉️ {{ \App\Models\Setting::string('contact_email') }}</p>
+                    @endif
                 </div>
             </div>
 

@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', 'বুকিং সফল — ভ্রমণবিলাস')
+@section('title', 'বুকিং সফল — '.\App\Models\Setting::string('site_name'))
 
 @section('content')
 

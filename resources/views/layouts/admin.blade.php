@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Panel') | ভ্রমণবিলাস</title>
+    <title>@yield('title', 'Admin Panel') | {{ \App\Models\Setting::string('site_name') }}</title>
+
+    @php $adminFavicon = \App\Models\Setting::image('favicon'); @endphp
+    @if ($adminFavicon)
+        <link rel="icon" href="{{ $adminFavicon }}">
+    @else
+        <link rel="icon" href="{{ asset('images/placeholder.svg') }}">
+    @endif
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -62,9 +69,16 @@
 <aside id="sidebar" class="sidebar fixed left-0 top-0 bottom-0 w-72 bg-slate-950 text-white z-50 -translate-x-full lg:translate-x-0">
 
     <div class="h-20 flex items-center px-6 border-b border-white/10">
-        <div class="w-10 h-10 rounded-xl bg-teal-700 flex items-center justify-center text-xl">✈</div>
-        <div class="ml-3">
-            <div class="font-extrabold">ভ্রমণবিলাস</div>
+        @php $adminLogo = \App\Models\Setting::image('logo'); @endphp
+        @if ($adminLogo)
+            <div class="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center shrink-0">
+                <img src="{{ $adminLogo }}" alt="{{ \App\Models\Setting::string('site_name') }}" class="w-full h-full object-contain">
+            </div>
+        @else
+            <div class="w-10 h-10 rounded-xl bg-teal-700 flex items-center justify-center text-xl">✈</div>
+        @endif
+        <div class="ml-3 min-w-0">
+            <div class="font-extrabold truncate">{{ \App\Models\Setting::string('site_name') }}</div>
             <div class="text-[10px] text-slate-400">ADMIN PANEL</div>
         </div>
         <button id="closeSidebar" class="ml-auto lg:hidden text-xl text-slate-400 hover:text-white">×</button>
@@ -126,7 +140,8 @@
             <span>📊</span> Reports
         </a>
 
-        <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5">
+        <a href="{{ route('admin.settings.edit') }}"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 {{ request()->routeIs('admin.settings.*') ? 'bg-teal-700 text-white' : '' }}">
             <span>⚙️</span> Settings
         </a>
     </nav>

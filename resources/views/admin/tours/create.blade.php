@@ -6,6 +6,17 @@
 
 @section('content')
 
+@if ($errors->any())
+    <div class="mb-5 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm px-4 py-3">
+        <p class="font-semibold mb-1">নিচের বিষয়গুলো ঠিক করতে হবে:</p>
+        <ul class="list-disc ps-5 space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div>
         <h2 class="text-2xl font-extrabold">Tour Information</h2>

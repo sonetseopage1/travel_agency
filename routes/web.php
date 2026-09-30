@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PromoCodeController as AdminPromoCodeController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\Admin\TourController as AdminTourController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\HomeController;
@@ -27,6 +28,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('reviews', AdminReviewController::class);
     Route::post('reviews/{id}/toggle', [AdminReviewController::class, 'toggleApproval'])->name('reviews.toggle');
     Route::resource('promo-codes', AdminPromoCodeController::class)->except('show');
+
+    Route::get('settings', [AdminSettingsController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [AdminSettingsController::class, 'update'])->name('settings.update');
+    Route::put('settings/password', [AdminSettingsController::class, 'updatePassword'])->name('settings.password');
 });
 
 Route::post('/logout', function () {

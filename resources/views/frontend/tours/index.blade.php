@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', 'ট্যুর প্যাকেজ — ভ্রমণবিলাস')
+@section('title', 'ট্যুর প্যাকেজ — '.\App\Models\Setting::string('site_name'))
 
 @section('content')
 
