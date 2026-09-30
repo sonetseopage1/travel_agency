@@ -1,0 +1,2685 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Tour | Admin Panel</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+
+            theme: {
+                extend: {
+                    fontFamily: {
+                        bangla: ['Noto Sans Bengali', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+
+        .sidebar {
+            transition: transform .25s ease;
+        }
+
+        .overlay {
+            transition: opacity .25s ease;
+        }
+
+        .tab-active {
+            color: #0f766e;
+            border-color: #0f766e;
+            background: #f0fdfa;
+        }
+
+        .dark .tab-active {
+            background: rgba(15, 118, 110, .15);
+        }
+
+    </style>
+</head>
+
+
+<body
+    class="bg-slate-100 dark:bg-slate-950
+           text-slate-800 dark:text-slate-100">
+
+
+<!-- =========================================================
+     MOBILE OVERLAY
+========================================================= -->
+
+<div
+    id="sidebarOverlay"
+    class="overlay fixed inset-0 bg-black/50 z-40
+           hidden opacity-0 lg:hidden">
+</div>
+
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside
+    id="sidebar"
+    class="sidebar fixed left-0 top-0 bottom-0
+           w-72 bg-slate-950 text-white
+           z-50
+           -translate-x-full lg:translate-x-0">
+
+    <div
+        class="h-20 flex items-center
+               px-6 border-b border-white/10">
+
+        <div
+            class="w-10 h-10 rounded-xl
+                   bg-teal-600
+                   flex items-center justify-center">
+
+            ✈
+
+        </div>
+
+        <div class="ml-3">
+
+            <div class="font-extrabold">
+                ভ্রমণবিলাস
+            </div>
+
+            <div class="text-[10px] text-slate-400">
+                ADMIN PANEL
+            </div>
+
+        </div>
+
+        <button
+            id="closeSidebar"
+            class="ml-auto lg:hidden text-xl">
+
+            ×
+
+        </button>
+
+    </div>
+
+
+    <!-- Navigation -->
+
+    <nav class="p-4 space-y-1">
+
+        <a
+            href="#"
+            class="flex items-center gap-3
+                   px-4 py-3 rounded-xl
+                   text-slate-400 hover:text-white
+                   hover:bg-white/5">
+
+            📊
+            Dashboard
+
+        </a>
+
+
+        <a
+            href="#"
+            class="flex items-center gap-3
+                   px-4 py-3 rounded-xl
+                   bg-teal-700 text-white">
+
+            🧳
+            Tours
+
+        </a>
+
+
+        <a
+            href="#"
+            class="flex items-center gap-3
+                   px-4 py-3 rounded-xl
+                   text-slate-400 hover:text-white
+                   hover:bg-white/5">
+
+            📅
+            Bookings
+
+        </a>
+
+
+        <a
+            href="#"
+            class="flex items-center gap-3
+                   px-4 py-3 rounded-xl
+                   text-slate-400 hover:text-white
+                   hover:bg-white/5">
+
+            👥
+            Travellers
+
+        </a>
+
+
+        <a
+            href="#"
+            class="flex items-center gap-3
+                   px-4 py-3 rounded-xl
+                   text-slate-400 hover:text-white
+                   hover:bg-white/5">
+
+            ⭐
+            Reviews
+
+        </a>
+
+
+        <a
+            href="#"
+            class="flex items-center gap-3
+                   px-4 py-3 rounded-xl
+                   text-slate-400 hover:text-white
+                   hover:bg-white/5">
+
+            ⚙️
+            Settings
+
+        </a>
+
+    </nav>
+
+
+    <!-- Admin -->
+
+    <div
+        class="absolute bottom-0
+               left-0 right-0 p-4
+               border-t border-white/10">
+
+        <div class="flex items-center gap-3">
+
+            <div
+                class="w-10 h-10 rounded-full
+                       bg-teal-700
+                       flex items-center justify-center">
+
+                A
+
+            </div>
+
+            <div class="flex-1">
+
+                <div class="text-sm font-bold">
+                    Admin
+                </div>
+
+                <div class="text-xs text-slate-500">
+                    Administrator
+                </div>
+
+            </div>
+
+            ⚙️
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<div class="lg:ml-72 min-h-screen">
+
+
+<!-- =========================================================
+     TOPBAR
+========================================================= -->
+
+<header
+    class="sticky top-0 z-30
+           h-20 bg-white/95
+           dark:bg-slate-900/95
+           backdrop-blur-xl
+           border-b border-slate-200
+           dark:border-slate-800">
+
+    <div
+        class="h-full px-4 sm:px-6
+               flex items-center
+               justify-between">
+
+        <div class="flex items-center gap-3">
+
+            <button
+                id="openSidebar"
+                class="lg:hidden w-10 h-10
+                       rounded-xl
+                       bg-slate-100
+                       dark:bg-slate-800">
+
+                ☰
+
+            </button>
+
+
+            <div>
+
+                <div class="text-xs text-slate-500">
+                    Tours
+                </div>
+
+                <h1
+                    class="text-lg sm:text-xl
+                           font-extrabold">
+
+                    নতুন ট্যুর যোগ করুন
+
+                </h1>
+
+            </div>
+
+        </div>
+
+
+        <div class="flex items-center gap-2">
+
+            <button
+                id="themeToggle"
+                class="w-10 h-10 rounded-xl
+                       bg-slate-100
+                       dark:bg-slate-800">
+
+                ☀️
+
+            </button>
+
+
+            <button
+                class="hidden sm:flex
+                       items-center gap-2
+                       px-4 py-2.5
+                       rounded-xl
+                       bg-slate-100
+                       dark:bg-slate-800
+                       text-sm">
+
+                👤 Admin
+
+            </button>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     PAGE CONTENT
+========================================================= -->
+
+<main
+    class="max-w-[1500px]
+           mx-auto px-4 sm:px-6
+           py-6 pb-32">
+
+
+<!-- =========================================================
+     TOP ACTION
+========================================================= -->
+
+<div
+    class="flex flex-col sm:flex-row
+           sm:items-center
+           justify-between gap-4 mb-6">
+
+    <div>
+
+        <h2
+            class="text-2xl font-extrabold">
+
+            Tour Information
+
+        </h2>
+
+        <p class="text-sm text-slate-500 mt-1">
+            Customer-facing tour details এখানে manage করুন।
+        </p>
+
+    </div>
+
+
+    <div class="flex gap-2">
+
+        <button
+            class="px-4 py-2.5
+                   rounded-xl
+                   border border-slate-300
+                   dark:border-slate-700
+                   text-sm font-semibold">
+
+            Cancel
+
+        </button>
+
+        <button
+            class="px-4 py-2.5
+                   rounded-xl
+                   bg-teal-700
+                   text-white
+                   text-sm font-bold">
+
+            Save Draft
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     TAB NAVIGATION
+========================================================= -->
+
+<div
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl
+           overflow-x-auto
+           hide-scrollbar">
+
+    <div
+        class="flex min-w-max">
+
+        <button
+            class="tour-tab tab-active
+                   px-5 py-4
+                   border-b-2
+                   text-sm font-bold">
+
+            01. Basic Info
+
+        </button>
+
+
+        <button
+            class="tour-tab
+                   px-5 py-4
+                   border-b-2 border-transparent
+                   text-sm font-semibold">
+
+            02. Media
+
+        </button>
+
+
+        <button
+            class="tour-tab
+                   px-5 py-4
+                   border-b-2 border-transparent
+                   text-sm font-semibold">
+
+            03. Pricing
+
+        </button>
+
+
+        <button
+            class="tour-tab
+                   px-5 py-4
+                   border-b-2 border-transparent
+                   text-sm font-semibold">
+
+            04. Itinerary
+
+        </button>
+
+
+        <button
+            class="tour-tab
+                   px-5 py-4
+                   border-b-2 border-transparent
+                   text-sm font-semibold">
+
+            05. Included
+
+        </button>
+
+
+        <button
+            class="tour-tab
+                   px-5 py-4
+                   border-b-2 border-transparent
+                   text-sm font-semibold">
+
+            06. FAQ
+
+        </button>
+
+
+        <button
+            class="tour-tab
+                   px-5 py-4
+                   border-b-2 border-transparent
+                   text-sm font-semibold">
+
+            07. SEO
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     FORM GRID
+========================================================= -->
+
+<div
+    class="grid xl:grid-cols-3
+           gap-6 mt-6">
+
+
+<!-- =========================================================
+     LEFT MAIN FORM
+========================================================= -->
+
+<div
+    class="xl:col-span-2
+           space-y-6">
+
+
+<!-- =========================================================
+     BASIC INFORMATION
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-5 sm:p-7">
+
+
+    <div class="mb-6">
+
+        <h2 class="text-lg font-extrabold">
+            Basic Information
+        </h2>
+
+        <p class="text-xs text-slate-500 mt-1">
+            Tour-এর মূল information দিন।
+        </p>
+
+    </div>
+
+
+    <div
+        class="grid md:grid-cols-2
+               gap-5">
+
+
+        <!-- Title -->
+
+        <div class="md:col-span-2">
+
+            <label class="label">
+                Tour Name
+                <span class="text-red-500">*</span>
+            </label>
+
+            <input
+                type="text"
+                value="কক্সবাজার সমুদ্র ভ্রমণ"
+                placeholder="যেমন: কক্সবাজার ৩ দিন ২ রাত"
+                class="input">
+
+        </div>
+
+
+        <!-- Short title -->
+
+        <div>
+
+            <label class="label">
+                Short Title
+            </label>
+
+            <input
+                type="text"
+                placeholder="যেমন: Cox's Bazar Escape"
+                class="input">
+
+        </div>
+
+
+        <!-- Category -->
+
+        <div>
+
+            <label class="label">
+                Category
+            </label>
+
+            <select class="input">
+
+                <option>Beach</option>
+                <option>Adventure</option>
+                <option>Nature</option>
+                <option>Historical</option>
+                <option>International</option>
+                <option>Family</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Destination -->
+
+        <div>
+
+            <label class="label">
+                Destination
+                <span class="text-red-500">*</span>
+            </label>
+
+            <input
+                type="text"
+                value="কক্সবাজার"
+                placeholder="গন্তব্য"
+                class="input">
+
+        </div>
+
+
+        <!-- Country -->
+
+        <div>
+
+            <label class="label">
+                Country
+            </label>
+
+            <select class="input">
+
+                <option>বাংলাদেশ</option>
+                <option>Malaysia</option>
+                <option>Thailand</option>
+                <option>Indonesia</option>
+                <option>Singapore</option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Description -->
+
+        <div class="md:col-span-2">
+
+            <label class="label">
+                Description
+            </label>
+
+            <textarea
+                rows="6"
+                placeholder="Tour সম্পর্কে বিস্তারিত লিখুন..."
+                class="input resize-none"></textarea>
+
+            <div
+                class="text-right
+                       text-xs text-slate-400 mt-1">
+
+                0 / 3000
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     DATE & DURATION
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-5 sm:p-7">
+
+
+    <div class="mb-6">
+
+        <h2 class="text-lg font-extrabold">
+            Date & Duration
+        </h2>
+
+    </div>
+
+
+    <div
+        class="grid sm:grid-cols-2
+               lg:grid-cols-4
+               gap-5">
+
+
+        <div>
+
+            <label class="label">
+                Departure Date
+            </label>
+
+            <input
+                type="date"
+                value="2026-10-15"
+                class="input">
+
+        </div>
+
+
+        <div>
+
+            <label class="label">
+                Return Date
+            </label>
+
+            <input
+                type="date"
+                value="2026-10-17"
+                class="input">
+
+        </div>
+
+
+        <div>
+
+            <label class="label">
+                Days
+            </label>
+
+            <input
+                type="number"
+                value="3"
+                class="input">
+
+        </div>
+
+
+        <div>
+
+            <label class="label">
+                Nights
+            </label>
+
+            <input
+                type="number"
+                value="2"
+                class="input">
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="mt-5
+               grid sm:grid-cols-2
+               gap-5">
+
+        <div>
+
+            <label class="label">
+                Departure Location
+            </label>
+
+            <input
+                type="text"
+                value="ঢাকা"
+                placeholder="যাত্রা শুরু"
+                class="input">
+
+        </div>
+
+
+        <div>
+
+            <label class="label">
+                Meeting Point
+            </label>
+
+            <input
+                type="text"
+                value="গাবতলী বাস টার্মিনাল"
+                class="input">
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     ITINERARY BUILDER
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-5 sm:p-7">
+
+
+    <div
+        class="flex flex-col sm:flex-row
+               sm:items-center
+               justify-between gap-4 mb-6">
+
+        <div>
+
+            <h2 class="text-lg font-extrabold">
+                Tour Itinerary
+            </h2>
+
+            <p class="text-xs text-slate-500 mt-1">
+                প্রতিদিনের সময়সূচি এবং activities যোগ করুন।
+            </p>
+
+        </div>
+
+
+        <button
+            onclick="addDay()"
+            class="px-4 py-2.5
+                   rounded-xl
+                   bg-teal-700
+                   text-white
+                   text-sm font-bold">
+
+            + Add Day
+
+        </button>
+
+    </div>
+
+
+    <div id="itineraryContainer">
+
+
+        <!-- DAY 01 -->
+
+        <div
+            class="day-card
+                   border border-slate-200
+                   dark:border-slate-700
+                   rounded-2xl
+                   overflow-hidden
+                   mb-5">
+
+
+            <!-- Day Header -->
+
+            <div
+                class="bg-slate-50
+                       dark:bg-slate-800
+                       px-5 py-4
+                       flex flex-col
+                       sm:flex-row
+                       justify-between
+                       sm:items-center gap-3">
+
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="w-9 h-9 rounded-xl
+                               bg-teal-700
+                               text-white
+                               flex items-center
+                               justify-center
+                               font-bold">
+
+                        1
+
+                    </div>
+
+
+                    <div>
+
+                        <input
+                            value="ঢাকা → কক্সবাজার"
+                            class="bg-transparent
+                                   font-bold
+                                   outline-none">
+
+                        <div
+                            class="text-[11px]
+                                   text-slate-500">
+
+                            Day 01
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="flex gap-2">
+
+                    <button
+                        class="px-3 py-1.5
+                               rounded-lg
+                               text-xs
+                               bg-white
+                               dark:bg-slate-900
+                               border
+                               border-slate-200
+                               dark:border-slate-700">
+
+                        Duplicate
+
+                    </button>
+
+                    <button
+                        class="px-3 py-1.5
+                               rounded-lg
+                               text-xs
+                               text-red-500
+                               bg-red-50
+                               dark:bg-red-950">
+
+                        Delete
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Activities -->
+
+            <div class="p-5">
+
+                <div
+                    class="activity-container
+                           space-y-4">
+
+
+                    <!-- Activity -->
+
+                    <div
+                        class="activity
+                               relative
+                               border border-slate-200
+                               dark:border-slate-700
+                               rounded-xl p-4">
+
+                        <div
+                            class="grid
+                                   md:grid-cols-12
+                                   gap-3">
+
+
+                            <!-- Time -->
+
+                            <div class="md:col-span-2">
+
+                                <label class="small-label">
+                                    Time
+                                </label>
+
+                                <input
+                                    type="time"
+                                    value="06:30"
+                                    class="input">
+
+                            </div>
+
+
+                            <!-- Icon -->
+
+                            <div class="md:col-span-1">
+
+                                <label class="small-label">
+                                    Icon
+                                </label>
+
+                                <select class="input">
+
+                                    <option>🚌</option>
+                                    <option>🍛</option>
+                                    <option>🏨</option>
+                                    <option>🌊</option>
+                                    <option>📍</option>
+                                    <option>🚤</option>
+                                    <option>🛍️</option>
+                                    <option>🌅</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- Title -->
+
+                            <div class="md:col-span-4">
+
+                                <label class="small-label">
+                                    Activity
+                                </label>
+
+                                <input
+                                    type="text"
+                                    value="গাবতলী থেকে যাত্রা"
+                                    class="input">
+
+                            </div>
+
+
+                            <!-- Location -->
+
+                            <div class="md:col-span-3">
+
+                                <label class="small-label">
+                                    Location
+                                </label>
+
+                                <input
+                                    type="text"
+                                    value="গাবতলী"
+                                    class="input">
+
+                            </div>
+
+
+                            <!-- Delete -->
+
+                            <div
+                                class="md:col-span-2
+                                       flex items-end">
+
+                                <button
+                                    class="w-full
+                                           py-2.5
+                                           rounded-xl
+                                           bg-red-50
+                                           dark:bg-red-950
+                                           text-red-600
+                                           text-sm">
+
+                                    🗑 Remove
+
+                                </button>
+
+                            </div>
+
+
+                            <!-- Description -->
+
+                            <div class="md:col-span-12">
+
+                                <label class="small-label">
+                                    Description
+                                </label>
+
+                                <textarea
+                                    rows="2"
+                                    placeholder="Activity সম্পর্কে..."
+                                    class="input resize-none"></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Activity 2 -->
+
+                    <div
+                        class="activity
+                               border border-slate-200
+                               dark:border-slate-700
+                               rounded-xl p-4">
+
+                        <div
+                            class="grid
+                                   md:grid-cols-12
+                                   gap-3">
+
+                            <div class="md:col-span-2">
+
+                                <label class="small-label">
+                                    Time
+                                </label>
+
+                                <input
+                                    type="time"
+                                    value="13:30"
+                                    class="input">
+
+                            </div>
+
+
+                            <div class="md:col-span-1">
+
+                                <label class="small-label">
+                                    Icon
+                                </label>
+
+                                <select class="input">
+
+                                    <option>🍛</option>
+                                    <option>🚌</option>
+                                    <option>🏨</option>
+                                    <option>🌊</option>
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="md:col-span-4">
+
+                                <label class="small-label">
+                                    Activity
+                                </label>
+
+                                <input
+                                    type="text"
+                                    value="Lunch Break"
+                                    class="input">
+
+                            </div>
+
+
+                            <div class="md:col-span-3">
+
+                                <label class="small-label">
+                                    Location
+                                </label>
+
+                                <input
+                                    type="text"
+                                    placeholder="Restaurant"
+                                    class="input">
+
+                            </div>
+
+
+                            <div
+                                class="md:col-span-2
+                                       flex items-end">
+
+                                <button
+                                    class="w-full py-2.5
+                                           rounded-xl
+                                           bg-red-50
+                                           dark:bg-red-950
+                                           text-red-600
+                                           text-sm">
+
+                                    🗑 Remove
+
+                                </button>
+
+                            </div>
+
+
+                            <div class="md:col-span-12">
+
+                                <label class="small-label">
+                                    Description
+                                </label>
+
+                                <textarea
+                                    rows="2"
+                                    class="input resize-none"></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    onclick="addActivity(this)"
+                    class="mt-4 w-full
+                           border-2
+                           border-dashed
+                           border-slate-300
+                           dark:border-slate-700
+                           rounded-xl
+                           py-3
+                           text-sm
+                           font-bold
+                           text-teal-700">
+
+                    + Add Activity
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DAY 02 -->
+
+        <div
+            class="day-card
+                   border border-slate-200
+                   dark:border-slate-700
+                   rounded-2xl
+                   overflow-hidden">
+
+
+            <div
+                class="bg-slate-50
+                       dark:bg-slate-800
+                       px-5 py-4
+                       flex justify-between
+                       items-center">
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="w-9 h-9 rounded-xl
+                               bg-teal-700
+                               text-white
+                               flex items-center
+                               justify-center
+                               font-bold">
+
+                        2
+
+                    </div>
+
+                    <div>
+
+                        <input
+                            value="Sea & Adventure"
+                            class="bg-transparent
+                                   font-bold
+                                   outline-none">
+
+                        <div
+                            class="text-[11px]
+                                   text-slate-500">
+
+                            Day 02
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="text-red-500 text-sm">
+
+                    Delete
+
+                </button>
+
+            </div>
+
+
+            <div class="p-5">
+
+                <div
+                    class="border border-slate-200
+                           dark:border-slate-700
+                           rounded-xl p-4">
+
+                    <div
+                        class="grid md:grid-cols-12
+                               gap-3">
+
+                        <div class="md:col-span-2">
+
+                            <label class="small-label">
+                                Time
+                            </label>
+
+                            <input
+                                type="time"
+                                value="07:00"
+                                class="input">
+
+                        </div>
+
+
+                        <div class="md:col-span-1">
+
+                            <label class="small-label">
+                                Icon
+                            </label>
+
+                            <select class="input">
+
+                                <option>🍳</option>
+                                <option>🚤</option>
+                                <option>🏝️</option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="md:col-span-4">
+
+                            <label class="small-label">
+                                Activity
+                            </label>
+
+                            <input
+                                value="Breakfast"
+                                class="input">
+
+                        </div>
+
+
+                        <div class="md:col-span-3">
+
+                            <label class="small-label">
+                                Location
+                            </label>
+
+                            <input
+                                value="Hotel"
+                                class="input">
+
+                        </div>
+
+
+                        <div
+                            class="md:col-span-2
+                                   flex items-end">
+
+                            <button
+                                class="w-full py-2.5
+                                       rounded-xl
+                                       bg-red-50
+                                       text-red-600">
+
+                                🗑 Remove
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    onclick="addActivity(this)"
+                    class="mt-4 w-full
+                           border-2
+                           border-dashed
+                           border-slate-300
+                           dark:border-slate-700
+                           rounded-xl py-3
+                           text-sm font-bold
+                           text-teal-700">
+
+                    + Add Activity
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     INCLUDED / EXCLUDED
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-5 sm:p-7">
+
+
+    <div class="mb-6">
+
+        <h2 class="text-lg font-extrabold">
+            Included & Excluded
+        </h2>
+
+    </div>
+
+
+    <div class="grid md:grid-cols-2 gap-6">
+
+
+        <!-- Included -->
+
+        <div>
+
+            <div
+                class="flex items-center
+                       justify-between mb-4">
+
+                <h3 class="font-bold text-green-600">
+                    ✓ Included
+                </h3>
+
+                <button
+                    class="text-sm
+                           text-teal-700
+                           font-bold">
+
+                    + Add
+
+                </button>
+
+            </div>
+
+
+            <div class="space-y-2">
+
+                <div class="flex gap-2">
+
+                    <input
+                        value="AC Bus Transport"
+                        class="input flex-1">
+
+                    <button
+                        class="w-11 rounded-xl
+                               bg-red-50
+                               text-red-500">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+
+                <div class="flex gap-2">
+
+                    <input
+                        value="২ রাত Hotel"
+                        class="input flex-1">
+
+                    <button
+                        class="w-11 rounded-xl
+                               bg-red-50
+                               text-red-500">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+
+                <div class="flex gap-2">
+
+                    <input
+                        value="Daily Breakfast"
+                        class="input flex-1">
+
+                    <button
+                        class="w-11 rounded-xl
+                               bg-red-50
+                               text-red-500">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Excluded -->
+
+        <div>
+
+            <div
+                class="flex items-center
+                       justify-between mb-4">
+
+                <h3 class="font-bold text-red-500">
+                    × Excluded
+                </h3>
+
+                <button
+                    class="text-sm
+                           text-teal-700
+                           font-bold">
+
+                    + Add
+
+                </button>
+
+            </div>
+
+
+            <div class="space-y-2">
+
+                <div class="flex gap-2">
+
+                    <input
+                        value="Personal Shopping"
+                        class="input flex-1">
+
+                    <button
+                        class="w-11 rounded-xl
+                               bg-red-50
+                               text-red-500">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+
+                <div class="flex gap-2">
+
+                    <input
+                        value="Lunch & Dinner"
+                        class="input flex-1">
+
+                    <button
+                        class="w-11 rounded-xl
+                               bg-red-50
+                               text-red-500">
+
+                        ×
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     IMPORTANT INFORMATION
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-5 sm:p-7">
+
+    <div
+        class="flex justify-between
+               items-center mb-5">
+
+        <div>
+
+            <h2 class="text-lg font-extrabold">
+                Important Information
+            </h2>
+
+            <p class="text-xs text-slate-500">
+                Traveller-দের জানানো প্রয়োজন এমন তথ্য।
+            </p>
+
+        </div>
+
+        <button
+            class="text-teal-700
+                   text-sm font-bold">
+
+            + Add
+
+        </button>
+
+    </div>
+
+
+    <div class="space-y-3">
+
+        <div class="flex gap-3">
+
+            <input
+                value="যাত্রার ৩০ মিনিট আগে উপস্থিত হতে হবে।"
+                class="input flex-1">
+
+            <button
+                class="w-11 rounded-xl
+                       bg-red-50
+                       text-red-500">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="flex gap-3">
+
+            <input
+                value="আবহাওয়ার কারণে itinerary পরিবর্তিত হতে পারে।"
+                class="input flex-1">
+
+            <button
+                class="w-11 rounded-xl
+                       bg-red-50
+                       text-red-500">
+
+                ×
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     FAQ
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-5 sm:p-7">
+
+    <div
+        class="flex justify-between
+               items-center mb-6">
+
+        <div>
+
+            <h2 class="text-lg font-extrabold">
+                Frequently Asked Questions
+            </h2>
+
+            <p class="text-xs text-slate-500 mt-1">
+                Tour-specific FAQ যোগ করুন।
+            </p>
+
+        </div>
+
+
+        <button
+            class="px-3 py-2 rounded-xl
+                   bg-teal-700 text-white
+                   text-sm font-bold">
+
+            + Add FAQ
+
+        </button>
+
+    </div>
+
+
+    <div class="space-y-4">
+
+
+        <div
+            class="border
+                   border-slate-200
+                   dark:border-slate-700
+                   rounded-xl p-5">
+
+            <div
+                class="grid md:grid-cols-2
+                       gap-4">
+
+                <div>
+
+                    <label class="small-label">
+                        Question
+                    </label>
+
+                    <input
+                        value="Booking করার পর confirmation পাব?"
+                        class="input">
+
+                </div>
+
+
+                <div>
+
+                    <label class="small-label">
+                        Answer
+                    </label>
+
+                    <input
+                        value="Payment successful হওয়ার পর confirmation পাঠানো হবে।"
+                        class="input">
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="text-red-500
+                       text-xs font-bold
+                       mt-4">
+
+                Remove FAQ
+
+            </button>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     SEO
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-5 sm:p-7">
+
+    <h2 class="text-lg font-extrabold">
+        SEO Settings
+    </h2>
+
+    <div
+        class="grid md:grid-cols-2
+               gap-5 mt-6">
+
+        <div>
+
+            <label class="label">
+                Meta Title
+            </label>
+
+            <input
+                placeholder="Cox's Bazar Tour Package..."
+                class="input">
+
+        </div>
+
+
+        <div>
+
+            <label class="label">
+                Meta Keywords
+            </label>
+
+            <input
+                placeholder="cox bazar tour, travel..."
+                class="input">
+
+        </div>
+
+
+        <div class="md:col-span-2">
+
+            <label class="label">
+                Meta Description
+            </label>
+
+            <textarea
+                rows="4"
+                class="input resize-none"
+                placeholder="Search engine description..."></textarea>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     RIGHT SIDEBAR
+========================================================= -->
+
+<aside class="space-y-6">
+
+
+<!-- =========================================================
+     PUBLISH
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-6">
+
+    <h2 class="font-extrabold">
+        Publish
+    </h2>
+
+
+    <div class="mt-5">
+
+        <label class="label">
+            Status
+        </label>
+
+        <select class="input">
+
+            <option>Draft</option>
+            <option>Published</option>
+            <option>Unpublished</option>
+            <option>Completed</option>
+
+        </select>
+
+    </div>
+
+
+    <div class="mt-5">
+
+        <label
+            class="flex items-center
+                   justify-between
+                   cursor-pointer">
+
+            <span class="text-sm font-semibold">
+                Featured Tour
+            </span>
+
+            <input
+                type="checkbox"
+                class="w-5 h-5 accent-teal-700">
+
+        </label>
+
+    </div>
+
+
+    <button
+        class="w-full mt-6
+               bg-teal-700
+               hover:bg-teal-800
+               text-white
+               py-3.5 rounded-xl
+               font-bold">
+
+        Publish Tour
+
+    </button>
+
+</section>
+
+
+
+<!-- =========================================================
+     PRICING & CAPACITY
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-6">
+
+    <h2 class="font-extrabold">
+        Pricing & Availability
+    </h2>
+
+
+    <div class="mt-5">
+
+        <label class="label">
+            Price / Person
+        </label>
+
+        <div class="relative">
+
+            <span
+                class="absolute left-4 top-1/2
+                       -translate-y-1/2
+                       text-slate-400">
+
+                ৳
+
+            </span>
+
+            <input
+                type="number"
+                value="6500"
+                class="input pl-9">
+
+        </div>
+
+    </div>
+
+
+    <div class="mt-4">
+
+        <label class="label">
+            Maximum Slots
+        </label>
+
+        <input
+            type="number"
+            value="30"
+            class="input">
+
+    </div>
+
+
+    <div class="mt-4">
+
+        <label class="label">
+            Current Booked
+        </label>
+
+        <input
+            type="number"
+            value="22"
+            readonly
+            class="input bg-slate-100
+                   dark:bg-slate-800">
+
+        <p class="text-[11px]
+                  text-slate-400 mt-1">
+
+            এটি booking system থেকে
+            automatically update হবে।
+
+        </p>
+
+    </div>
+
+
+    <div
+        class="mt-5
+               bg-teal-50
+               dark:bg-teal-950
+               rounded-xl p-4">
+
+        <div
+            class="text-xs text-slate-500">
+
+            Available Slots
+
+        </div>
+
+        <div
+            class="text-2xl
+                   font-extrabold
+                   text-teal-700 mt-1">
+
+            ৮
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     COVER IMAGE
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-6">
+
+    <h2 class="font-extrabold">
+        Cover Image
+    </h2>
+
+
+    <div
+        class="mt-4
+               border-2 border-dashed
+               border-slate-300
+               dark:border-slate-700
+               rounded-2xl
+               overflow-hidden">
+
+
+        <div
+            class="relative h-48">
+
+            <img
+                src="https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=700&q=80"
+                class="w-full h-full object-cover">
+
+            <button
+                class="absolute top-3 right-3
+                       w-9 h-9 rounded-xl
+                       bg-black/60 text-white">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <div class="p-4 text-center">
+
+            <button
+                class="text-teal-700
+                       text-sm font-bold">
+
+                Change Image
+
+            </button>
+
+            <p
+                class="text-[11px]
+                       text-slate-400 mt-1">
+
+                JPG, PNG, WEBP • Max 5MB
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     GALLERY
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-6">
+
+    <div
+        class="flex justify-between
+               items-center">
+
+        <h2 class="font-extrabold">
+            Gallery
+        </h2>
+
+        <button
+            class="text-teal-700
+                   text-sm font-bold">
+
+            + Add
+
+        </button>
+
+    </div>
+
+
+    <div
+        class="grid grid-cols-3
+               gap-2 mt-4">
+
+        <img
+            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=300&q=80"
+            class="w-full h-20 object-cover rounded-lg">
+
+        <img
+            src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=300&q=80"
+            class="w-full h-20 object-cover rounded-lg">
+
+        <img
+            src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=300&q=80"
+            class="w-full h-20 object-cover rounded-lg">
+
+    </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     TOUR FEATURES
+========================================================= -->
+
+<section
+    class="bg-white dark:bg-slate-900
+           border border-slate-200
+           dark:border-slate-800
+           rounded-2xl p-6">
+
+    <h2 class="font-extrabold">
+        Tour Features
+    </h2>
+
+    <div class="mt-5 space-y-3">
+
+        <label
+            class="flex gap-3 items-center
+                   text-sm">
+
+            <input
+                type="checkbox"
+                checked
+                class="w-4 h-4 accent-teal-700">
+
+            Hotel Included
+
+        </label>
+
+
+        <label
+            class="flex gap-3 items-center
+                   text-sm">
+
+            <input
+                type="checkbox"
+                checked
+                class="w-4 h-4 accent-teal-700">
+
+            Transport Included
+
+        </label>
+
+
+        <label
+            class="flex gap-3 items-center
+                   text-sm">
+
+            <input
+                type="checkbox"
+                checked
+                class="w-4 h-4 accent-teal-700">
+
+            Breakfast Included
+
+        </label>
+
+
+        <label
+            class="flex gap-3 items-center
+                   text-sm">
+
+            <input
+                type="checkbox"
+                class="w-4 h-4 accent-teal-700">
+
+            Tour Guide
+
+        </label>
+
+
+        <label
+            class="flex gap-3 items-center
+                   text-sm">
+
+            <input
+                type="checkbox"
+                class="w-4 h-4 accent-teal-700">
+
+            Airport Pickup
+
+        </label>
+
+    </div>
+
+</section>
+
+
+</aside>
+
+</div>
+
+</main>
+
+
+
+<!-- =========================================================
+     MOBILE BOTTOM ACTION
+========================================================= -->
+
+<div
+    class="lg:hidden fixed
+           bottom-0 left-0 right-0
+           z-40
+           bg-white dark:bg-slate-900
+           border-t
+           border-slate-200
+           dark:border-slate-800
+           p-3">
+
+    <div class="flex gap-2">
+
+        <button
+            class="flex-1
+                   border border-slate-300
+                   dark:border-slate-700
+                   rounded-xl py-3
+                   font-semibold">
+
+            Save Draft
+
+        </button>
+
+        <button
+            class="flex-1
+                   bg-teal-700
+                   text-white
+                   rounded-xl py-3
+                   font-bold">
+
+            Publish
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /* =========================
+       THEME
+    ========================= */
+
+    const themeToggle =
+        document.getElementById('themeToggle');
+
+    themeToggle.addEventListener('click', () => {
+
+        document.documentElement.classList.toggle('dark');
+
+        const dark =
+            document.documentElement.classList.contains('dark');
+
+        localStorage.setItem(
+            'theme',
+            dark ? 'dark' : 'light'
+        );
+
+        themeToggle.innerHTML =
+            dark ? '🌙' : '☀️';
+
+    });
+
+
+    if (
+        localStorage.getItem('theme') === 'dark'
+    ) {
+
+        document.documentElement.classList.add('dark');
+
+        themeToggle.innerHTML = '🌙';
+
+    }
+
+
+
+    /* =========================
+       MOBILE SIDEBAR
+    ========================= */
+
+    const sidebar =
+        document.getElementById('sidebar');
+
+    const overlay =
+        document.getElementById('sidebarOverlay');
+
+    const openSidebar =
+        document.getElementById('openSidebar');
+
+    const closeSidebar =
+        document.getElementById('closeSidebar');
+
+
+    function showSidebar() {
+
+        sidebar.classList.remove('-translate-x-full');
+
+        overlay.classList.remove('hidden');
+
+        setTimeout(() => {
+            overlay.classList.remove('opacity-0');
+        }, 10);
+
+    }
+
+
+    function hideSidebar() {
+
+        sidebar.classList.add('-translate-x-full');
+
+        overlay.classList.add('opacity-0');
+
+        setTimeout(() => {
+            overlay.classList.add('hidden');
+        }, 250);
+
+    }
+
+
+    openSidebar.addEventListener(
+        'click',
+        showSidebar
+    );
+
+    closeSidebar.addEventListener(
+        'click',
+        hideSidebar
+    );
+
+    overlay.addEventListener(
+        'click',
+        hideSidebar
+    );
+
+
+
+    /* =========================
+       TABS
+    ========================= */
+
+    const tabs =
+        document.querySelectorAll('.tour-tab');
+
+
+    tabs.forEach(tab => {
+
+        tab.addEventListener('click', () => {
+
+            tabs.forEach(item => {
+
+                item.classList.remove(
+                    'tab-active'
+                );
+
+            });
+
+            tab.classList.add(
+                'tab-active'
+            );
+
+        });
+
+    });
+
+
+
+    /* =========================
+       ADD DAY
+    ========================= */
+
+    function addDay() {
+
+        const container =
+            document.getElementById(
+                'itineraryContainer'
+            );
+
+        const dayNumber =
+            container.querySelectorAll(
+                '.day-card'
+            ).length + 1;
+
+
+        const day = document.createElement('div');
+
+        day.className =
+            'day-card border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden mb-5';
+
+
+        day.innerHTML = `
+
+            <div
+                class="bg-slate-50 dark:bg-slate-800
+                       px-5 py-4
+                       flex justify-between
+                       items-center">
+
+                <div class="flex items-center gap-3">
+
+                    <div
+                        class="w-9 h-9 rounded-xl
+                               bg-teal-700 text-white
+                               flex items-center
+                               justify-center
+                               font-bold">
+
+                        ${dayNumber}
+
+                    </div>
+
+                    <div>
+
+                        <input
+                            value="New Day"
+                            class="bg-transparent
+                                   font-bold outline-none">
+
+                        <div
+                            class="text-[11px]
+                                   text-slate-500">
+
+                            Day ${dayNumber}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    onclick="this.closest('.day-card').remove()"
+                    class="text-red-500 text-sm">
+
+                    Delete
+
+                </button>
+
+            </div>
+
+
+            <div class="p-5">
+
+                <div class="activity-container space-y-4">
+
+                    ${activityTemplate()}
+
+                </div>
+
+
+                <button
+                    onclick="addActivity(this)"
+                    class="mt-4 w-full
+                           border-2 border-dashed
+                           border-slate-300
+                           dark:border-slate-700
+                           rounded-xl py-3
+                           text-sm font-bold
+                           text-teal-700">
+
+                    + Add Activity
+
+                </button>
+
+            </div>
+
+        `;
+
+
+        container.appendChild(day);
+
+    }
+
+
+
+    /* =========================
+       ACTIVITY TEMPLATE
+    ========================= */
+
+    function activityTemplate() {
+
+        return `
+
+        <div
+            class="activity
+                   border border-slate-200
+                   dark:border-slate-700
+                   rounded-xl p-4">
+
+            <div
+                class="grid md:grid-cols-12
+                       gap-3">
+
+                <div class="md:col-span-2">
+
+                    <label class="small-label">
+                        Time
+                    </label>
+
+                    <input
+                        type="time"
+                        class="input">
+
+                </div>
+
+
+                <div class="md:col-span-1">
+
+                    <label class="small-label">
+                        Icon
+                    </label>
+
+                    <select class="input">
+
+                        <option>📍</option>
+                        <option>🚌</option>
+                        <option>🍛</option>
+                        <option>🏨</option>
+                        <option>🌊</option>
+                        <option>🚤</option>
+                        <option>🏝️</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="md:col-span-4">
+
+                    <label class="small-label">
+                        Activity
+                    </label>
+
+                    <input
+                        placeholder="Activity name"
+                        class="input">
+
+                </div>
+
+
+                <div class="md:col-span-3">
+
+                    <label class="small-label">
+                        Location
+                    </label>
+
+                    <input
+                        placeholder="Location"
+                        class="input">
+
+                </div>
+
+
+                <div
+                    class="md:col-span-2
+                           flex items-end">
+
+                    <button
+                        onclick="
+                            this.closest('.activity').remove()
+                        "
+                        class="w-full py-2.5
+                               rounded-xl
+                               bg-red-50
+                               dark:bg-red-950
+                               text-red-600">
+
+                        🗑 Remove
+
+                    </button>
+
+                </div>
+
+
+                <div class="md:col-span-12">
+
+                    <label class="small-label">
+                        Description
+                    </label>
+
+                    <textarea
+                        rows="2"
+                        placeholder="Activity সম্পর্কে..."
+                        class="input resize-none"></textarea>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        `;
+
+    }
+
+
+
+    /* =========================
+       ADD ACTIVITY
+    ========================= */
+
+    function addActivity(button) {
+
+        const container =
+            button.previousElementSibling;
+
+        container.insertAdjacentHTML(
+            'beforeend',
+            activityTemplate()
+        );
+
+    }
+
+</script>
+
+
+
+<!-- =========================================================
+     COMMON FORM CLASSES
+========================================================= -->
+
+<style>
+
+    .label {
+        display: block;
+        font-size: .875rem;
+        font-weight: 600;
+        margin-bottom: .5rem;
+    }
+
+    .small-label {
+        display: block;
+        font-size: .7rem;
+        color: #64748b;
+        margin-bottom: .35rem;
+        font-weight: 600;
+    }
+
+    .input {
+        width: 100%;
+        border-radius: .75rem;
+        border: 1px solid #e2e8f0;
+        background: #fff;
+        padding: .7rem .85rem;
+        outline: none;
+        font-size: .875rem;
+    }
+
+    .input:focus {
+        border-color: #0f766e;
+        box-shadow: 0 0 0 2px rgba(15,118,110,.12);
+    }
+
+    .dark .input {
+        background: #0f172a;
+        border-color: #334155;
+        color: #f8fafc;
+    }
+
+    .dark .input::placeholder {
+        color: #64748b;
+    }
+
+</style>
+
+</body>
+
+</html>

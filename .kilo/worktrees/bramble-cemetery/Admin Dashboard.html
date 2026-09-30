@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Admin Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .sidebar-transition {
+            transition: transform .3s ease;
+        }
+
+        .glass {
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
+
+<div class="min-h-screen">
+
+    <!-- =========================
+         MOBILE OVERLAY
+    ========================== -->
+    <div id="sidebarOverlay"
+         class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden">
+    </div>
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+    <aside id="sidebar"
+           class="fixed left-0 top-0 z-50 h-screen w-72
+                  bg-white dark:bg-slate-900
+                  border-r border-slate-200 dark:border-slate-800
+                  sidebar-transition
+                  -translate-x-full lg:translate-x-0">
+
+        <!-- Logo -->
+        <div class="h-20 px-6 flex items-center border-b border-slate-200 dark:border-slate-800">
+
+            <div class="w-10 h-10 rounded-xl
+                        bg-gradient-to-br from-pink-600 to-purple-700
+                        flex items-center justify-center
+                        text-white font-bold text-lg">
+                T
+            </div>
+
+            <div class="ml-3">
+                <h1 class="font-bold text-lg">
+                    TravelMate
+                </h1>
+
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                    Tour Management
+                </p>
+            </div>
+
+            <button id="closeSidebar"
+                    class="ml-auto lg:hidden text-slate-500">
+                ✕
+            </button>
+
+        </div>
+
+
+        <!-- Navigation -->
+        <nav class="p-4 space-y-1">
+
+            <p class="px-3 mb-3 text-xs font-semibold uppercase
+                      tracking-wider text-slate-400">
+                Main Menu
+            </p>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      bg-pink-50 dark:bg-pink-500/10
+                      text-pink-600 dark:text-pink-400
+                      font-semibold">
+
+                <span>▣</span>
+                Dashboard
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      hover:bg-slate-100 dark:hover:bg-slate-800
+                      transition">
+
+                <span>🗺️</span>
+                Tours
+
+                <span class="ml-auto text-xs bg-slate-100 dark:bg-slate-800
+                             px-2 py-1 rounded-full">
+                    24
+                </span>
+
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      hover:bg-slate-100 dark:hover:bg-slate-800
+                      transition">
+
+                <span>📅</span>
+                Bookings
+
+                <span class="ml-auto text-xs bg-pink-100 text-pink-600
+                             dark:bg-pink-500/10 dark:text-pink-400
+                             px-2 py-1 rounded-full">
+                    18
+                </span>
+
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      hover:bg-slate-100 dark:hover:bg-slate-800
+                      transition">
+
+                <span>👥</span>
+                Customers
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      hover:bg-slate-100 dark:hover:bg-slate-800
+                      transition">
+
+                <span>💰</span>
+                Payments
+            </a>
+
+
+            <p class="px-3 pt-7 mb-3 text-xs font-semibold uppercase
+                      tracking-wider text-slate-400">
+                Management
+            </p>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      hover:bg-slate-100 dark:hover:bg-slate-800
+                      transition">
+
+                <span>🖼️</span>
+                Media Gallery
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      hover:bg-slate-100 dark:hover:bg-slate-800
+                      transition">
+
+                <span>⭐</span>
+                Reviews
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      hover:bg-slate-100 dark:hover:bg-slate-800
+                      transition">
+
+                <span>❓</span>
+                FAQ
+            </a>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      hover:bg-slate-100 dark:hover:bg-slate-800
+                      transition">
+
+                <span>📊</span>
+                Reports
+            </a>
+
+
+            <p class="px-3 pt-7 mb-3 text-xs font-semibold uppercase
+                      tracking-wider text-slate-400">
+                System
+            </p>
+
+            <a href="#"
+               class="flex items-center gap-3 px-4 py-3 rounded-xl
+                      hover:bg-slate-100 dark:hover:bg-slate-800
+                      transition">
+
+                <span>⚙️</span>
+                Settings
+            </a>
+
+        </nav>
+
+
+        <!-- Admin profile -->
+        <div class="absolute bottom-0 left-0 right-0
+                    p-4 border-t border-slate-200 dark:border-slate-800">
+
+            <div class="flex items-center gap-3">
+
+                <div class="w-10 h-10 rounded-full
+                            bg-gradient-to-br from-pink-500 to-purple-600
+                            flex items-center justify-center
+                            text-white font-semibold">
+                    AS
+                </div>
+
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold truncate">
+                        Admin
+                    </p>
+
+                    <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                        admin@travelmate.com
+                    </p>
+                </div>
+
+                <button class="text-slate-400">
+                    ⋮
+                </button>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+    <main class="lg:ml-72">
+
+
+        <!-- =========================
+             TOPBAR
+        ========================== -->
+        <header class="h-20 sticky top-0 z-30
+                       bg-white/90 dark:bg-slate-900/90
+                       glass
+                       border-b border-slate-200 dark:border-slate-800">
+
+            <div class="h-full px-4 sm:px-6 lg:px-8
+                        flex items-center justify-between">
+
+                <div class="flex items-center gap-4">
+
+                    <button id="openSidebar"
+                            class="lg:hidden w-10 h-10 rounded-xl
+                                   border border-slate-200
+                                   dark:border-slate-700">
+                        ☰
+                    </button>
+
+                    <div>
+                        <h2 class="text-xl font-bold">
+                            Dashboard
+                        </h2>
+
+                        <p class="hidden sm:block text-sm text-slate-500 dark:text-slate-400">
+                            তোমার tour business-এর overview
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="flex items-center gap-2 sm:gap-4">
+
+                    <!-- Search -->
+                    <button class="w-10 h-10 rounded-xl
+                                   hover:bg-slate-100
+                                   dark:hover:bg-slate-800">
+                        🔍
+                    </button>
+
+                    <!-- Notification -->
+                    <button class="relative w-10 h-10 rounded-xl
+                                   hover:bg-slate-100
+                                   dark:hover:bg-slate-800">
+
+                        🔔
+
+                        <span class="absolute top-1 right-1
+                                     w-2 h-2 rounded-full
+                                     bg-red-500">
+                        </span>
+
+                    </button>
+
+                    <!-- Theme -->
+                    <button id="themeToggle"
+                            class="w-10 h-10 rounded-xl
+                                   hover:bg-slate-100
+                                   dark:hover:bg-slate-800">
+                        🌙
+                    </button>
+
+                    <!-- Profile -->
+                    <div class="hidden sm:flex items-center gap-2">
+
+                        <div class="w-9 h-9 rounded-full
+                                    bg-pink-100 dark:bg-pink-500/10
+                                    flex items-center justify-center
+                                    text-pink-600">
+                            A
+                        </div>
+
+                        <span class="font-medium">
+                            Admin
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             CONTENT
+        ========================== -->
+        <div class="p-4 sm:p-6 lg:p-8">
+
+
+            <!-- Welcome -->
+            <div class="flex flex-col sm:flex-row
+                        sm:items-center sm:justify-between
+                        gap-4 mb-7">
+
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold">
+                        শুভ সকাল, Admin 👋
+                    </h1>
+
+                    <p class="mt-1 text-slate-500 dark:text-slate-400">
+                        আজকের tour business-এর অবস্থা দেখে নাও।
+                    </p>
+                </div>
+
+                <a href="#"
+                   class="inline-flex items-center justify-center
+                          px-5 py-3 rounded-xl
+                          bg-pink-600 hover:bg-pink-700
+                          text-white font-semibold
+                          shadow-lg shadow-pink-600/20">
+                    + নতুন Tour
+                </a>
+
+            </div>
+
+
+            <!-- =========================
+                 STAT CARDS
+            ========================== -->
+            <div class="grid grid-cols-1 sm:grid-cols-2
+                        xl:grid-cols-4 gap-4">
+
+
+                <!-- Tours -->
+                <div class="bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl p-5">
+
+                    <div class="flex items-start justify-between">
+
+                        <div>
+                            <p class="text-sm text-slate-500">
+                                Total Tours
+                            </p>
+
+                            <h3 class="text-3xl font-bold mt-2">
+                                24
+                            </h3>
+
+                            <p class="text-sm text-emerald-600 mt-2">
+                                ↑ 12% এই মাসে
+                            </p>
+                        </div>
+
+                        <div class="w-12 h-12 rounded-xl
+                                    bg-blue-50 dark:bg-blue-500/10
+                                    flex items-center justify-center
+                                    text-xl">
+                            🗺️
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Bookings -->
+                <div class="bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl p-5">
+
+                    <div class="flex items-start justify-between">
+
+                        <div>
+                            <p class="text-sm text-slate-500">
+                                Total Bookings
+                            </p>
+
+                            <h3 class="text-3xl font-bold mt-2">
+                                1,284
+                            </h3>
+
+                            <p class="text-sm text-emerald-600 mt-2">
+                                ↑ 18.4% এই মাসে
+                            </p>
+                        </div>
+
+                        <div class="w-12 h-12 rounded-xl
+                                    bg-purple-50 dark:bg-purple-500/10
+                                    flex items-center justify-center
+                                    text-xl">
+                            📅
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Customers -->
+                <div class="bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl p-5">
+
+                    <div class="flex items-start justify-between">
+
+                        <div>
+                            <p class="text-sm text-slate-500">
+                                Customers
+                            </p>
+
+                            <h3 class="text-3xl font-bold mt-2">
+                                892
+                            </h3>
+
+                            <p class="text-sm text-emerald-600 mt-2">
+                                ↑ 9.8% এই মাসে
+                            </p>
+                        </div>
+
+                        <div class="w-12 h-12 rounded-xl
+                                    bg-amber-50 dark:bg-amber-500/10
+                                    flex items-center justify-center
+                                    text-xl">
+                            👥
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Revenue -->
+                <div class="bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl p-5">
+
+                    <div class="flex items-start justify-between">
+
+                        <div>
+                            <p class="text-sm text-slate-500">
+                                Total Revenue
+                            </p>
+
+                            <h3 class="text-3xl font-bold mt-2">
+                                ৳ 18.6L
+                            </h3>
+
+                            <p class="text-sm text-emerald-600 mt-2">
+                                ↑ 22.5% এই মাসে
+                            </p>
+                        </div>
+
+                        <div class="w-12 h-12 rounded-xl
+                                    bg-emerald-50 dark:bg-emerald-500/10
+                                    flex items-center justify-center
+                                    text-xl">
+                            💰
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 CHART AREA
+            ========================== -->
+            <div class="grid grid-cols-1 xl:grid-cols-3
+                        gap-5 mt-5">
+
+
+                <!-- Revenue Chart -->
+                <div class="xl:col-span-2
+                            bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl p-5">
+
+                    <div class="flex flex-col sm:flex-row
+                                sm:items-center sm:justify-between
+                                gap-3 mb-5">
+
+                        <div>
+                            <h3 class="font-bold text-lg">
+                                Revenue Overview
+                            </h3>
+
+                            <p class="text-sm text-slate-500">
+                                গত ৬ মাসের revenue
+                            </p>
+                        </div>
+
+                        <select class="px-3 py-2 rounded-lg
+                                       bg-slate-50 dark:bg-slate-800
+                                       border border-slate-200
+                                       dark:border-slate-700
+                                       text-sm">
+
+                            <option>Last 6 Months</option>
+                            <option>This Year</option>
+                            <option>Last Year</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="h-[300px]">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+
+                </div>
+
+
+                <!-- Booking Status -->
+                <div class="bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl p-5">
+
+                    <div class="mb-5">
+
+                        <h3 class="font-bold text-lg">
+                            Booking Status
+                        </h3>
+
+                        <p class="text-sm text-slate-500">
+                            এই মাসের booking
+                        </p>
+
+                    </div>
+
+                    <div class="h-[220px]">
+                        <canvas id="bookingChart"></canvas>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 mt-5">
+
+                        <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10">
+                            <p class="text-xs text-slate-500">
+                                Confirmed
+                            </p>
+                            <p class="font-bold text-emerald-600">
+                                784
+                            </p>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-500/10">
+                            <p class="text-xs text-slate-500">
+                                Pending
+                            </p>
+                            <p class="font-bold text-amber-600">
+                                126
+                            </p>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-red-50 dark:bg-red-500/10">
+                            <p class="text-xs text-slate-500">
+                                Cancelled
+                            </p>
+                            <p class="font-bold text-red-600">
+                                54
+                            </p>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-500/10">
+                            <p class="text-xs text-slate-500">
+                                Completed
+                            </p>
+                            <p class="font-bold text-blue-600">
+                                320
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 UPCOMING TOURS + ACTIONS
+            ========================== -->
+            <div class="grid grid-cols-1 xl:grid-cols-3
+                        gap-5 mt-5">
+
+
+                <!-- Upcoming Tours -->
+                <div class="xl:col-span-2
+                            bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl">
+
+                    <div class="p-5 border-b border-slate-200
+                                dark:border-slate-800
+                                flex items-center justify-between">
+
+                        <div>
+                            <h3 class="font-bold text-lg">
+                                Upcoming Tours
+                            </h3>
+
+                            <p class="text-sm text-slate-500">
+                                সামনে যেসব tour আছে
+                            </p>
+                        </div>
+
+                        <a href="#"
+                           class="text-sm text-pink-600 font-semibold">
+                            সব দেখুন →
+                        </a>
+
+                    </div>
+
+
+                    <div class="divide-y divide-slate-200
+                                dark:divide-slate-800">
+
+
+                        <!-- Tour 1 -->
+                        <div class="p-5 flex flex-col sm:flex-row
+                                    gap-4">
+
+                            <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=300&q=80"
+                                 class="w-full sm:w-28 h-24 object-cover rounded-xl"
+                                 alt="Tour">
+
+                            <div class="flex-1">
+
+                                <div class="flex flex-wrap gap-2 items-center">
+
+                                    <h4 class="font-semibold">
+                                        সাজেক ভ্যালি Adventure
+                                    </h4>
+
+                                    <span class="text-xs px-2 py-1
+                                                 rounded-full
+                                                 bg-emerald-100
+                                                 text-emerald-700
+                                                 dark:bg-emerald-500/10
+                                                 dark:text-emerald-400">
+                                        Confirmed
+                                    </span>
+
+                                </div>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    📅 12 Oct 2026
+                                    &nbsp; • &nbsp;
+                                    📍 Dhaka → Sajek
+                                </p>
+
+                                <div class="mt-3 flex flex-wrap gap-4
+                                            text-sm">
+
+                                    <span>
+                                        👥 24 / 30 Slots
+                                    </span>
+
+                                    <span class="text-pink-600 font-semibold">
+                                        ৳ 6,500 / person
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <button class="self-start px-4 py-2
+                                           rounded-lg
+                                           border border-slate-200
+                                           dark:border-slate-700
+                                           text-sm">
+                                View
+                            </button>
+
+                        </div>
+
+
+                        <!-- Tour 2 -->
+                        <div class="p-5 flex flex-col sm:flex-row
+                                    gap-4">
+
+                            <img src="https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=300&q=80"
+                                 class="w-full sm:w-28 h-24 object-cover rounded-xl"
+                                 alt="Tour">
+
+                            <div class="flex-1">
+
+                                <div class="flex flex-wrap gap-2 items-center">
+
+                                    <h4 class="font-semibold">
+                                        কক্সবাজার Sea Beach Tour
+                                    </h4>
+
+                                    <span class="text-xs px-2 py-1
+                                                 rounded-full
+                                                 bg-amber-100
+                                                 text-amber-700
+                                                 dark:bg-amber-500/10
+                                                 dark:text-amber-400">
+                                        Almost Full
+                                    </span>
+
+                                </div>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    📅 18 Oct 2026
+                                    &nbsp; • &nbsp;
+                                    📍 Dhaka → Cox's Bazar
+                                </p>
+
+                                <div class="mt-3 flex flex-wrap gap-4
+                                            text-sm">
+
+                                    <span>
+                                        👥 42 / 45 Slots
+                                    </span>
+
+                                    <span class="text-pink-600 font-semibold">
+                                        ৳ 8,900 / person
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <button class="self-start px-4 py-2
+                                           rounded-lg
+                                           border border-slate-200
+                                           dark:border-slate-700
+                                           text-sm">
+                                View
+                            </button>
+
+                        </div>
+
+
+                        <!-- Tour 3 -->
+                        <div class="p-5 flex flex-col sm:flex-row
+                                    gap-4">
+
+                            <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=300&q=80"
+                                 class="w-full sm:w-28 h-24 object-cover rounded-xl"
+                                 alt="Tour">
+
+                            <div class="flex-1">
+
+                                <div class="flex flex-wrap gap-2 items-center">
+
+                                    <h4 class="font-semibold">
+                                        বান্দরবান Nature Escape
+                                    </h4>
+
+                                    <span class="text-xs px-2 py-1
+                                                 rounded-full
+                                                 bg-blue-100
+                                                 text-blue-700
+                                                 dark:bg-blue-500/10
+                                                 dark:text-blue-400">
+                                        Open
+                                    </span>
+
+                                </div>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    📅 25 Oct 2026
+                                    &nbsp; • &nbsp;
+                                    📍 Dhaka → Bandarban
+                                </p>
+
+                                <div class="mt-3 flex flex-wrap gap-4
+                                            text-sm">
+
+                                    <span>
+                                        👥 16 / 30 Slots
+                                    </span>
+
+                                    <span class="text-pink-600 font-semibold">
+                                        ৳ 7,200 / person
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                            <button class="self-start px-4 py-2
+                                           rounded-lg
+                                           border border-slate-200
+                                           dark:border-slate-700
+                                           text-sm">
+                                View
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Pending Actions -->
+                <div class="bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl">
+
+                    <div class="p-5 border-b border-slate-200
+                                dark:border-slate-800">
+
+                        <h3 class="font-bold text-lg">
+                            Pending Actions
+                        </h3>
+
+                        <p class="text-sm text-slate-500">
+                            তোমার attention দরকার
+                        </p>
+
+                    </div>
+
+
+                    <div class="p-5 space-y-4">
+
+
+                        <a href="#"
+                           class="flex gap-4 p-4 rounded-xl
+                                  bg-amber-50 dark:bg-amber-500/10">
+
+                            <div class="w-10 h-10 rounded-lg
+                                        bg-amber-100 dark:bg-amber-500/20
+                                        flex items-center justify-center">
+                                ⏳
+                            </div>
+
+                            <div>
+                                <p class="font-semibold">
+                                    Pending Bookings
+                                </p>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    18টি booking confirmation-এর অপেক্ষায়
+                                </p>
+                            </div>
+
+                        </a>
+
+
+                        <a href="#"
+                           class="flex gap-4 p-4 rounded-xl
+                                  bg-red-50 dark:bg-red-500/10">
+
+                            <div class="w-10 h-10 rounded-lg
+                                        bg-red-100 dark:bg-red-500/20
+                                        flex items-center justify-center">
+                                ⚠️
+                            </div>
+
+                            <div>
+                                <p class="font-semibold">
+                                    Low Slot Tours
+                                </p>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    3টি tour প্রায় full হয়ে গেছে
+                                </p>
+                            </div>
+
+                        </a>
+
+
+                        <a href="#"
+                           class="flex gap-4 p-4 rounded-xl
+                                  bg-blue-50 dark:bg-blue-500/10">
+
+                            <div class="w-10 h-10 rounded-lg
+                                        bg-blue-100 dark:bg-blue-500/20
+                                        flex items-center justify-center">
+                                ⭐
+                            </div>
+
+                            <div>
+                                <p class="font-semibold">
+                                    New Reviews
+                                </p>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    7টি নতুন review-এর reply দরকার
+                                </p>
+                            </div>
+
+                        </a>
+
+
+                        <a href="#"
+                           class="flex gap-4 p-4 rounded-xl
+                                  bg-purple-50 dark:bg-purple-500/10">
+
+                            <div class="w-10 h-10 rounded-lg
+                                        bg-purple-100 dark:bg-purple-500/20
+                                        flex items-center justify-center">
+                                🖼️
+                            </div>
+
+                            <div>
+                                <p class="font-semibold">
+                                    Missing Media
+                                </p>
+
+                                <p class="text-sm text-slate-500 mt-1">
+                                    2টি tour-এর cover image নেই
+                                </p>
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 RECENT BOOKINGS
+            ========================== -->
+            <div class="mt-5
+                        bg-white dark:bg-slate-900
+                        border border-slate-200 dark:border-slate-800
+                        rounded-2xl overflow-hidden">
+
+                <div class="p-5 flex flex-col sm:flex-row
+                            sm:items-center sm:justify-between gap-3">
+
+                    <div>
+                        <h3 class="font-bold text-lg">
+                            Recent Bookings
+                        </h3>
+
+                        <p class="text-sm text-slate-500">
+                            সর্বশেষ customer bookings
+                        </p>
+                    </div>
+
+                    <a href="#"
+                       class="text-sm font-semibold text-pink-600">
+                        সব Booking দেখুন →
+                    </a>
+
+                </div>
+
+
+                <!-- Desktop table -->
+                <div class="hidden md:block overflow-x-auto">
+
+                    <table class="w-full text-sm">
+
+                        <thead class="bg-slate-50 dark:bg-slate-800/50">
+
+                        <tr class="text-left text-slate-500">
+
+                            <th class="px-5 py-4 font-medium">
+                                Customer
+                            </th>
+
+                            <th class="px-5 py-4 font-medium">
+                                Tour
+                            </th>
+
+                            <th class="px-5 py-4 font-medium">
+                                Date
+                            </th>
+
+                            <th class="px-5 py-4 font-medium">
+                                Guests
+                            </th>
+
+                            <th class="px-5 py-4 font-medium">
+                                Amount
+                            </th>
+
+                            <th class="px-5 py-4 font-medium">
+                                Status
+                            </th>
+
+                            <th class="px-5 py-4 font-medium">
+                                Action
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody class="divide-y divide-slate-200
+                                     dark:divide-slate-800">
+
+
+                        <tr>
+
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-3">
+
+                                    <div class="w-9 h-9 rounded-full
+                                                bg-pink-100
+                                                text-pink-600
+                                                flex items-center justify-center
+                                                font-semibold">
+                                        RH
+                                    </div>
+
+                                    <div>
+                                        <p class="font-medium">
+                                            Rahim Hasan
+                                        </p>
+
+                                        <p class="text-xs text-slate-500">
+                                            rahim@email.com
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td class="px-5 py-4">
+                                Sajek Adventure
+                            </td>
+
+                            <td class="px-5 py-4">
+                                12 Oct 2026
+                            </td>
+
+                            <td class="px-5 py-4">
+                                2
+                            </td>
+
+                            <td class="px-5 py-4 font-semibold">
+                                ৳ 13,000
+                            </td>
+
+                            <td class="px-5 py-4">
+
+                                <span class="px-3 py-1 rounded-full
+                                             text-xs
+                                             bg-emerald-100
+                                             text-emerald-700
+                                             dark:bg-emerald-500/10
+                                             dark:text-emerald-400">
+                                    Confirmed
+                                </span>
+
+                            </td>
+
+                            <td class="px-5 py-4">
+                                <button class="text-pink-600 font-medium">
+                                    View
+                                </button>
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-3">
+
+                                    <div class="w-9 h-9 rounded-full
+                                                bg-blue-100
+                                                text-blue-600
+                                                flex items-center justify-center
+                                                font-semibold">
+                                        SA
+                                    </div>
+
+                                    <div>
+                                        <p class="font-medium">
+                                            Sumaiya Akter
+                                        </p>
+
+                                        <p class="text-xs text-slate-500">
+                                            sumaiya@email.com
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td class="px-5 py-4">
+                                Cox's Bazar Tour
+                            </td>
+
+                            <td class="px-5 py-4">
+                                18 Oct 2026
+                            </td>
+
+                            <td class="px-5 py-4">
+                                4
+                            </td>
+
+                            <td class="px-5 py-4 font-semibold">
+                                ৳ 35,600
+                            </td>
+
+                            <td class="px-5 py-4">
+
+                                <span class="px-3 py-1 rounded-full
+                                             text-xs
+                                             bg-amber-100
+                                             text-amber-700
+                                             dark:bg-amber-500/10
+                                             dark:text-amber-400">
+                                    Pending
+                                </span>
+
+                            </td>
+
+                            <td class="px-5 py-4">
+                                <button class="text-pink-600 font-medium">
+                                    View
+                                </button>
+                            </td>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td class="px-5 py-4">
+                                <div class="flex items-center gap-3">
+
+                                    <div class="w-9 h-9 rounded-full
+                                                bg-purple-100
+                                                text-purple-600
+                                                flex items-center justify-center
+                                                font-semibold">
+                                        TM
+                                    </div>
+
+                                    <div>
+                                        <p class="font-medium">
+                                            Tanvir Mahmud
+                                        </p>
+
+                                        <p class="text-xs text-slate-500">
+                                            tanvir@email.com
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                            <td class="px-5 py-4">
+                                Bandarban Nature
+                            </td>
+
+                            <td class="px-5 py-4">
+                                25 Oct 2026
+                            </td>
+
+                            <td class="px-5 py-4">
+                                3
+                            </td>
+
+                            <td class="px-5 py-4 font-semibold">
+                                ৳ 21,600
+                            </td>
+
+                            <td class="px-5 py-4">
+
+                                <span class="px-3 py-1 rounded-full
+                                             text-xs
+                                             bg-emerald-100
+                                             text-emerald-700
+                                             dark:bg-emerald-500/10
+                                             dark:text-emerald-400">
+                                    Confirmed
+                                </span>
+
+                            </td>
+
+                            <td class="px-5 py-4">
+                                <button class="text-pink-600 font-medium">
+                                    View
+                                </button>
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- Mobile cards -->
+                <div class="md:hidden divide-y
+                            divide-slate-200
+                            dark:divide-slate-800">
+
+                    <div class="p-5">
+
+                        <div class="flex justify-between gap-3">
+
+                            <div>
+                                <p class="font-semibold">
+                                    Rahim Hasan
+                                </p>
+
+                                <p class="text-sm text-slate-500">
+                                    Sajek Adventure
+                                </p>
+                            </div>
+
+                            <span class="text-xs px-2 py-1 h-fit
+                                         rounded-full
+                                         bg-emerald-100
+                                         text-emerald-700">
+                                Confirmed
+                            </span>
+
+                        </div>
+
+                        <div class="mt-3 flex justify-between
+                                    text-sm">
+
+                            <span>
+                                2 Guests
+                            </span>
+
+                            <span class="font-semibold">
+                                ৳ 13,000
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="p-5">
+
+                        <div class="flex justify-between gap-3">
+
+                            <div>
+                                <p class="font-semibold">
+                                    Sumaiya Akter
+                                </p>
+
+                                <p class="text-sm text-slate-500">
+                                    Cox's Bazar Tour
+                                </p>
+                            </div>
+
+                            <span class="text-xs px-2 py-1 h-fit
+                                         rounded-full
+                                         bg-amber-100
+                                         text-amber-700">
+                                Pending
+                            </span>
+
+                        </div>
+
+                        <div class="mt-3 flex justify-between
+                                    text-sm">
+
+                            <span>
+                                4 Guests
+                            </span>
+
+                            <span class="font-semibold">
+                                ৳ 35,600
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 TOP TOURS
+            ========================== -->
+            <div class="grid grid-cols-1 lg:grid-cols-2
+                        gap-5 mt-5">
+
+
+                <!-- Top Tours -->
+                <div class="bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl p-5">
+
+                    <div class="flex justify-between items-center mb-5">
+
+                        <div>
+                            <h3 class="font-bold text-lg">
+                                Top Performing Tours
+                            </h3>
+
+                            <p class="text-sm text-slate-500">
+                                Booking অনুযায়ী
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="space-y-5">
+
+
+                        <div>
+
+                            <div class="flex justify-between mb-2">
+
+                                <span class="font-medium">
+                                    Cox's Bazar
+                                </span>
+
+                                <span class="text-sm text-slate-500">
+                                    82%
+                                </span>
+
+                            </div>
+
+                            <div class="h-2 rounded-full bg-slate-100
+                                        dark:bg-slate-800">
+
+                                <div class="h-full w-[82%]
+                                            rounded-full bg-pink-600">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="flex justify-between mb-2">
+
+                                <span class="font-medium">
+                                    Sajek Valley
+                                </span>
+
+                                <span class="text-sm text-slate-500">
+                                    76%
+                                </span>
+
+                            </div>
+
+                            <div class="h-2 rounded-full bg-slate-100
+                                        dark:bg-slate-800">
+
+                                <div class="h-full w-[76%]
+                                            rounded-full bg-purple-600">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="flex justify-between mb-2">
+
+                                <span class="font-medium">
+                                    Bandarban
+                                </span>
+
+                                <span class="text-sm text-slate-500">
+                                    64%
+                                </span>
+
+                            </div>
+
+                            <div class="h-2 rounded-full bg-slate-100
+                                        dark:bg-slate-800">
+
+                                <div class="h-full w-[64%]
+                                            rounded-full bg-blue-600">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div>
+
+                            <div class="flex justify-between mb-2">
+
+                                <span class="font-medium">
+                                    Sylhet
+                                </span>
+
+                                <span class="text-sm text-slate-500">
+                                    51%
+                                </span>
+
+                            </div>
+
+                            <div class="h-2 rounded-full bg-slate-100
+                                        dark:bg-slate-800">
+
+                                <div class="h-full w-[51%]
+                                            rounded-full bg-emerald-500">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Quick Actions -->
+                <div class="bg-white dark:bg-slate-900
+                            border border-slate-200 dark:border-slate-800
+                            rounded-2xl p-5">
+
+                    <h3 class="font-bold text-lg">
+                        Quick Actions
+                    </h3>
+
+                    <p class="text-sm text-slate-500 mb-5">
+                        দ্রুত কাজগুলো এখান থেকে করো
+                    </p>
+
+
+                    <div class="grid grid-cols-2 gap-3">
+
+                        <a href="#"
+                           class="p-4 rounded-xl
+                                  border border-slate-200
+                                  dark:border-slate-700
+                                  hover:border-pink-500
+                                  hover:text-pink-600
+                                  transition">
+
+                            <div class="text-2xl mb-2">
+                                🗺️
+                            </div>
+
+                            <p class="font-semibold">
+                                Add Tour
+                            </p>
+
+                            <p class="text-xs text-slate-500 mt-1">
+                                নতুন tour তৈরি করুন
+                            </p>
+
+                        </a>
+
+
+                        <a href="#"
+                           class="p-4 rounded-xl
+                                  border border-slate-200
+                                  dark:border-slate-700
+                                  hover:border-pink-500
+                                  hover:text-pink-600
+                                  transition">
+
+                            <div class="text-2xl mb-2">
+                                📅
+                            </div>
+
+                            <p class="font-semibold">
+                                Bookings
+                            </p>
+
+                            <p class="text-xs text-slate-500 mt-1">
+                                Booking manage করুন
+                            </p>
+
+                        </a>
+
+
+                        <a href="#"
+                           class="p-4 rounded-xl
+                                  border border-slate-200
+                                  dark:border-slate-700
+                                  hover:border-pink-500
+                                  hover:text-pink-600
+                                  transition">
+
+                            <div class="text-2xl mb-2">
+                                🖼️
+                            </div>
+
+                            <p class="font-semibold">
+                                Upload Media
+                            </p>
+
+                            <p class="text-xs text-slate-500 mt-1">
+                                Tour photos যোগ করুন
+                            </p>
+
+                        </a>
+
+
+                        <a href="#"
+                           class="p-4 rounded-xl
+                                  border border-slate-200
+                                  dark:border-slate-700
+                                  hover:border-pink-500
+                                  hover:text-pink-600
+                                  transition">
+
+                            <div class="text-2xl mb-2">
+                                📊
+                            </div>
+
+                            <p class="font-semibold">
+                                Reports
+                            </p>
+
+                            <p class="text-xs text-slate-500 mt-1">
+                                Business report দেখুন
+                            </p>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    /* =========================
+       SIDEBAR
+    ========================== */
+
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    document.getElementById('openSidebar').addEventListener('click', () => {
+
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+
+    });
+
+    document.getElementById('closeSidebar').addEventListener('click', () => {
+
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+
+    });
+
+    overlay.addEventListener('click', () => {
+
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+
+    });
+
+
+    /* =========================
+       DARK MODE
+    ========================== */
+
+    const themeToggle = document.getElementById('themeToggle');
+
+    themeToggle.addEventListener('click', () => {
+
+        document.documentElement.classList.toggle('dark');
+
+        if (document.documentElement.classList.contains('dark')) {
+
+            localStorage.setItem('theme', 'dark');
+            themeToggle.innerText = '☀️';
+
+        } else {
+
+            localStorage.setItem('theme', 'light');
+            themeToggle.innerText = '🌙';
+
+        }
+
+    });
+
+
+    if (localStorage.getItem('theme') === 'dark') {
+
+        document.documentElement.classList.add('dark');
+        themeToggle.innerText = '☀️';
+
+    }
+
+
+    /* =========================
+       REVENUE CHART
+    ========================== */
+
+    const revenueCtx =
+        document.getElementById('revenueChart');
+
+    new Chart(revenueCtx, {
+
+        type: 'line',
+
+        data: {
+
+            labels: [
+                'May',
+                'Jun',
+                'Jul',
+                'Aug',
+                'Sep',
+                'Oct'
+            ],
+
+            datasets: [{
+
+                label: 'Revenue',
+
+                data: [
+                    180000,
+                    240000,
+                    210000,
+                    320000,
+                    410000,
+                    520000
+                ],
+
+                borderWidth: 3,
+
+                tension: 0.4,
+
+                fill: true,
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    ticks: {
+
+                        callback: function(value) {
+
+                            return '৳' +
+                                (value / 1000) +
+                                'K';
+
+                        }
+
+                    },
+
+                    grid: {
+                        display: false
+                    }
+
+                },
+
+                x: {
+
+                    grid: {
+                        display: false
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+
+    /* =========================
+       BOOKING CHART
+    ========================== */
+
+    const bookingCtx =
+        document.getElementById('bookingChart');
+
+    new Chart(bookingCtx, {
+
+        type: 'doughnut',
+
+        data: {
+
+            labels: [
+                'Confirmed',
+                'Pending',
+                'Cancelled',
+                'Completed'
+            ],
+
+            datasets: [{
+
+                data: [
+                    784,
+                    126,
+                    54,
+                    320
+                ],
+
+                borderWidth: 0
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            cutout: '70%',
+
+            plugins: {
+
+                legend: {
+                    display: false
+                }
+
+            }
+
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

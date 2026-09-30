@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="bn" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>কক্সবাজার সমুদ্র ভ্রমণ | ভ্রমণবিলাস</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+
+            theme: {
+                extend: {
+                    fontFamily: {
+                        bangla: ['Noto Sans Bengali', 'sans-serif']
+                    },
+
+                    colors: {
+                        primary: '#0F766E',
+                        secondary: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans Bengali', sans-serif;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 19px;
+            top: 42px;
+            bottom: -30px;
+            width: 2px;
+            background: #dbe4e2;
+        }
+
+        .dark .timeline-line {
+            background: #334155;
+        }
+
+        @media (max-width: 767px) {
+            .timeline-line {
+                left: 17px;
+            }
+        }
+    </style>
+</head>
+
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100">
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header
+    class="sticky top-0 z-50
+           bg-white/95 dark:bg-slate-950/95
+           backdrop-blur-xl
+           border-b border-slate-200 dark:border-slate-800">
+
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="h-16 md:h-20 flex items-center justify-between">
+
+            <!-- Logo -->
+
+            <a href="#" class="flex items-center gap-2">
+
+                <div
+                    class="w-10 h-10 rounded-xl
+                           bg-teal-700 text-white
+                           flex items-center justify-center">
+
+                    ✈
+
+                </div>
+
+                <div>
+
+                    <div class="font-extrabold text-lg text-teal-700">
+                        ভ্রমণবিলাস
+                    </div>
+
+                    <div class="hidden sm:block text-[9px] text-slate-400">
+                        Travel • Explore • Memories
+                    </div>
+
+                </div>
+
+            </a>
+
+
+            <!-- Desktop Menu -->
+
+            <div class="hidden lg:flex items-center gap-7 text-sm font-semibold">
+
+                <a href="#" class="hover:text-teal-700">
+                    হোম
+                </a>
+
+                <a href="#" class="text-teal-700">
+                    ট্যুর প্যাকেজ
+                </a>
+
+                <a href="#">
+                    গন্তব্য
+                </a>
+
+                <a href="#">
+                    আমাদের সম্পর্কে
+                </a>
+
+                <a href="#">
+                    যোগাযোগ
+                </a>
+
+            </div>
+
+
+            <!-- Right -->
+
+            <div class="flex items-center gap-2">
+
+                <button
+                    class="hidden sm:flex px-3 py-2
+                           rounded-xl bg-slate-100
+                           dark:bg-slate-800 text-sm">
+
+                    বাংলা ▾
+
+                </button>
+
+
+                <button
+                    id="themeToggle"
+                    class="w-10 h-10 rounded-xl
+                           bg-slate-100 dark:bg-slate-800">
+
+                    ☀️
+
+                </button>
+
+
+                <button
+                    class="lg:hidden w-10 h-10 rounded-xl
+                           bg-slate-100 dark:bg-slate-800">
+
+                    ☰
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =====================================================
+     BREADCRUMB
+===================================================== -->
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <div class="py-4 text-xs sm:text-sm text-slate-500">
+
+        <a href="#" class="hover:text-teal-700">
+            হোম
+        </a>
+
+        <span class="mx-2">/</span>
+
+        <a href="#" class="hover:text-teal-700">
+            ট্যুর প্যাকেজ
+        </a>
+
+        <span class="mx-2">/</span>
+
+        <span class="text-slate-800 dark:text-slate-300">
+            কক্সবাজার
+        </span>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     TOUR HERO / GALLERY
+===================================================== -->
+
+<section>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div
+            class="grid lg:grid-cols-5 gap-3
+                   h-[320px] sm:h-[420px] lg:h-[500px]">
+
+            <!-- Main Image -->
+
+            <div
+                class="lg:col-span-3
+                       relative overflow-hidden
+                       rounded-2xl lg:rounded-3xl">
+
+                <img
+                    src="https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1400&q=85"
+                    class="w-full h-full object-cover"
+                    alt="Cox's Bazar">
+
+                <div
+                    class="absolute inset-0
+                           bg-gradient-to-t
+                           from-black/60 via-transparent
+                           to-transparent">
+                </div>
+
+
+                <div
+                    class="absolute top-4 left-4
+                           bg-white/90
+                           text-teal-700
+                           px-3 py-1.5
+                           rounded-full
+                           text-xs sm:text-sm
+                           font-bold">
+
+                    🇧🇩 বাংলাদেশ
+
+                </div>
+
+
+                <div
+                    class="absolute bottom-5 left-5 right-5
+                           text-white">
+
+                    <div
+                        class="inline-flex items-center
+                               gap-2 bg-red-500
+                               px-3 py-1 rounded-full
+                               text-xs font-bold mb-3">
+
+                        🔥 মাত্র ৮টি সিট বাকি
+
+                    </div>
+
+                    <h1
+                        class="text-2xl sm:text-4xl lg:text-5xl
+                               font-extrabold">
+
+                        কক্সবাজার সমুদ্র ভ্রমণ
+
+                    </h1>
+
+                </div>
+
+            </div>
+
+
+            <!-- Side Gallery -->
+
+            <div
+                class="hidden lg:grid
+                       lg:col-span-2
+                       grid-cols-2 gap-3">
+
+                <img
+                    src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=80"
+                    class="w-full h-full object-cover rounded-3xl">
+
+                <img
+                    src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=700&q=80"
+                    class="w-full h-full object-cover rounded-3xl">
+
+                <img
+                    src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=700&q=80"
+                    class="w-full h-full object-cover rounded-3xl">
+
+                <div class="relative overflow-hidden rounded-3xl">
+
+                    <img
+                        src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=700&q=80"
+                        class="w-full h-full object-cover">
+
+                    <div
+                        class="absolute inset-0 bg-black/45
+                               flex items-center justify-center">
+
+                        <span class="text-white font-bold">
+                            +১২ ছবি
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+
+<main
+    class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8
+           py-8 lg:py-12">
+
+    <div class="grid lg:grid-cols-3 gap-8">
+
+
+        <!-- =================================================
+             LEFT CONTENT
+        ================================================== -->
+
+        <div class="lg:col-span-2 space-y-8">
+
+
+            <!-- TOUR SUMMARY -->
+
+            <section>
+
+                <div class="flex flex-wrap gap-3 mb-5">
+
+                    <span
+                        class="px-3 py-1.5 rounded-full
+                               bg-teal-50 dark:bg-teal-950
+                               text-teal-700
+                               text-xs font-bold">
+
+                        ⭐ 4.9 (128 Reviews)
+
+                    </span>
+
+                    <span
+                        class="px-3 py-1.5 rounded-full
+                               bg-slate-100 dark:bg-slate-800
+                               text-xs font-semibold">
+
+                        Adventure Tour
+
+                    </span>
+
+                </div>
+
+
+                <h2
+                    class="text-2xl md:text-3xl
+                           font-extrabold">
+
+                    কক্সবাজার ৩ দিন ২ রাত
+                    সমুদ্র ভ্রমণ
+
+                </h2>
+
+
+                <p
+                    class="text-slate-500
+                           dark:text-slate-400
+                           mt-4 leading-8">
+
+                    বাংলাদেশের সবচেয়ে জনপ্রিয় সমুদ্র সৈকত
+                    কক্সবাজার ঘুরে দেখুন আমাদের পরিকল্পিত
+                    ৩ দিন ২ রাতের premium group tour-এর মাধ্যমে।
+                    Hotel, transport, meals এবং sightseeing
+                    package-এর মধ্যে অন্তর্ভুক্ত।
+
+                </p>
+
+
+                <!-- Quick Facts -->
+
+                <div
+                    class="grid grid-cols-2
+                           sm:grid-cols-4
+                           gap-3 mt-7">
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-4">
+
+                        <div class="text-xl">
+                            🗓️
+                        </div>
+
+                        <div class="text-xs text-slate-500 mt-2">
+                            সময়কাল
+                        </div>
+
+                        <div class="font-bold mt-1">
+                            ৩ দিন ২ রাত
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-4">
+
+                        <div class="text-xl">
+                            📍
+                        </div>
+
+                        <div class="text-xs text-slate-500 mt-2">
+                            গন্তব্য
+                        </div>
+
+                        <div class="font-bold mt-1">
+                            কক্সবাজার
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-4">
+
+                        <div class="text-xl">
+                            🚌
+                        </div>
+
+                        <div class="text-xs text-slate-500 mt-2">
+                            যাতায়াত
+                        </div>
+
+                        <div class="font-bold mt-1">
+                            AC Bus
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-4">
+
+                        <div class="text-xl">
+                            👥
+                        </div>
+
+                        <div class="text-xs text-slate-500 mt-2">
+                            গ্রুপ
+                        </div>
+
+                        <div class="font-bold mt-1">
+                            ৩০ জন
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 LIVE AVAILABILITY
+            ================================================== -->
+
+            <section
+                class="rounded-3xl
+                       bg-gradient-to-r
+                       from-teal-700 to-teal-800
+                       text-white p-5 sm:p-7">
+
+                <div
+                    class="flex flex-col
+                           sm:flex-row
+                           sm:items-center
+                           justify-between gap-5">
+
+                    <div>
+
+                        <div
+                            class="text-xs font-bold
+                                   text-teal-200
+                                   uppercase">
+
+                            Live Availability
+
+                        </div>
+
+                        <div
+                            class="text-xl sm:text-2xl
+                                   font-extrabold mt-1">
+
+                            ৩০টি সিটের মধ্যে
+                            ২২টি বুক হয়েছে
+
+                        </div>
+
+                        <div
+                            class="text-sm
+                                   text-white/70 mt-1">
+
+                            আর মাত্র ৮টি সিট available
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="w-full sm:w-48">
+
+                        <div
+                            class="flex justify-between
+                                   text-xs mb-2">
+
+                            <span>
+                                Booked
+                            </span>
+
+                            <span>
+                                73%
+                            </span>
+
+                        </div>
+
+                        <div
+                            class="h-2.5
+                                   rounded-full
+                                   bg-white/20">
+
+                            <div
+                                class="h-full w-[73%]
+                                       bg-amber-400
+                                       rounded-full">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 ITINERARY
+            ================================================== -->
+
+            <section id="itinerary">
+
+                <div class="mb-8">
+
+                    <div
+                        class="text-teal-700
+                               font-bold text-sm">
+
+                        TOUR PLAN
+
+                    </div>
+
+                    <h2
+                        class="text-2xl md:text-3xl
+                               font-extrabold mt-1">
+
+                        ভ্রমণের বিস্তারিত পরিকল্পনা
+
+                    </h2>
+
+                    <p class="text-sm text-slate-500 mt-2">
+                        প্রতিদিনের কার্যক্রম ও সময়সূচি
+                    </p>
+
+                </div>
+
+
+                <!-- DAY 01 -->
+
+                <div class="relative pl-12 pb-10">
+
+                    <div class="timeline-line"></div>
+
+                    <div
+                        class="absolute left-0 top-0
+                               w-10 h-10
+                               rounded-full
+                               bg-teal-700
+                               text-white
+                               flex items-center
+                               justify-center
+                               font-bold z-10">
+
+                        ১
+
+                    </div>
+
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-5 sm:p-6">
+
+                        <div
+                            class="flex flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   justify-between gap-2">
+
+                            <h3
+                                class="text-lg sm:text-xl
+                                       font-extrabold">
+
+                                Day 01 — ঢাকা → কক্সবাজার
+
+                            </h3>
+
+                            <span
+                                class="text-xs
+                                       bg-teal-50
+                                       dark:bg-teal-950
+                                       text-teal-700
+                                       px-3 py-1.5
+                                       rounded-full
+                                       font-bold">
+
+                                Travel Day
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="mt-6 space-y-5">
+
+
+                            <!-- Activity -->
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl
+                                           bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🚌
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs
+                                               text-teal-700
+                                               font-bold">
+
+                                        06:30 AM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        গাবতলী থেকে যাত্রা
+                                    </div>
+
+                                    <div
+                                        class="text-sm
+                                               text-slate-500
+                                               mt-1">
+
+                                        নির্ধারিত meeting point-এ
+                                        সবাইকে উপস্থিত থাকতে হবে।
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl
+                                           bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🍛
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs
+                                               text-teal-700
+                                               font-bold">
+
+                                        01:30 PM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        Lunch Break
+                                    </div>
+
+                                    <div
+                                        class="text-sm
+                                               text-slate-500
+                                               mt-1">
+
+                                        পথে নির্ধারিত restaurant-এ
+                                        দুপুরের খাবার।
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl
+                                           bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🏨
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs
+                                               text-teal-700
+                                               font-bold">
+
+                                        04:00 PM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        Hotel Check-in
+                                    </div>
+
+                                    <div
+                                        class="text-sm
+                                               text-slate-500
+                                               mt-1">
+
+                                        Hotel check-in এবং
+                                        fresh-up।
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl
+                                           bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🌊
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs
+                                               text-teal-700
+                                               font-bold">
+
+                                        05:00 PM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        Laboni Beach
+                                    </div>
+
+                                    <div
+                                        class="text-sm
+                                               text-slate-500
+                                               mt-1">
+
+                                        সূর্যাস্ত উপভোগ ও
+                                        beach activities।
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DAY 02 -->
+
+                <div class="relative pl-12 pb-10">
+
+                    <div class="timeline-line"></div>
+
+                    <div
+                        class="absolute left-0 top-0
+                               w-10 h-10
+                               rounded-full
+                               bg-teal-700
+                               text-white
+                               flex items-center
+                               justify-center
+                               font-bold z-10">
+
+                        ২
+
+                    </div>
+
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-5 sm:p-6">
+
+                        <h3
+                            class="text-lg sm:text-xl
+                                   font-extrabold">
+
+                            Day 02 — Sea & Adventure
+
+                        </h3>
+
+
+                        <div class="mt-6 space-y-5">
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🍳
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs text-teal-700
+                                               font-bold">
+
+                                        07:00 AM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        Breakfast
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🚤
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs text-teal-700
+                                               font-bold">
+
+                                        08:00 AM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        Marine Drive
+                                    </div>
+
+                                    <div
+                                        class="text-sm text-slate-500 mt-1">
+
+                                        Marine Drive road trip এবং
+                                        scenic photography।
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🏝️
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs text-teal-700
+                                               font-bold">
+
+                                        11:00 AM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        Inani Beach
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🌅
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs text-teal-700
+                                               font-bold">
+
+                                        05:00 PM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        Sunset Experience
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DAY 03 -->
+
+                <div class="relative pl-12">
+
+                    <div
+                        class="absolute left-0 top-0
+                               w-10 h-10
+                               rounded-full
+                               bg-teal-700
+                               text-white
+                               flex items-center
+                               justify-center
+                               font-bold z-10">
+
+                        ৩
+
+                    </div>
+
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-5 sm:p-6">
+
+                        <h3
+                            class="text-lg sm:text-xl
+                                   font-extrabold">
+
+                            Day 03 — Shopping & Return
+
+                        </h3>
+
+
+                        <div class="mt-6 space-y-5">
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🛍️
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs text-teal-700
+                                               font-bold">
+
+                                        10:00 AM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        Local Shopping
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="flex gap-4">
+
+                                <div
+                                    class="w-9 h-9 flex-shrink-0
+                                           rounded-xl bg-slate-100
+                                           dark:bg-slate-800
+                                           flex items-center
+                                           justify-center">
+
+                                    🚌
+
+                                </div>
+
+                                <div>
+
+                                    <div
+                                        class="text-xs text-teal-700
+                                               font-bold">
+
+                                        02:00 PM
+
+                                    </div>
+
+                                    <div class="font-bold mt-1">
+                                        ঢাকার উদ্দেশ্যে যাত্রা
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 INCLUDED / EXCLUDED
+            ================================================== -->
+
+            <section>
+
+                <h2 class="text-2xl font-extrabold mb-6">
+                    প্যাকেজে যা যা থাকছে
+                </h2>
+
+
+                <div class="grid sm:grid-cols-2 gap-5">
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-6">
+
+                        <h3 class="font-bold text-lg">
+                            ✅ Included
+                        </h3>
+
+                        <ul
+                            class="mt-5 space-y-3
+                                   text-sm text-slate-500">
+
+                            <li>✓ ঢাকা-কক্সবাজার AC বাস</li>
+                            <li>✓ ২ রাত hotel accommodation</li>
+                            <li>✓ Daily breakfast</li>
+                            <li>✓ Sightseeing transport</li>
+                            <li>✓ Tour guide</li>
+                            <li>✓ Basic travel assistance</li>
+
+                        </ul>
+
+                    </div>
+
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-6">
+
+                        <h3 class="font-bold text-lg">
+                            ❌ Excluded
+                        </h3>
+
+                        <ul
+                            class="mt-5 space-y-3
+                                   text-sm text-slate-500">
+
+                            <li>× Personal shopping</li>
+                            <li>× Lunch & dinner</li>
+                            <li>× Personal expenses</li>
+                            <li>× Optional activities</li>
+                            <li>× Anything not mentioned above</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 IMPORTANT INFORMATION
+            ================================================== -->
+
+            <section
+                class="bg-amber-50 dark:bg-amber-950/30
+                       border border-amber-200
+                       dark:border-amber-900
+                       rounded-3xl p-6">
+
+                <h2
+                    class="text-xl font-extrabold">
+
+                    📌 গুরুত্বপূর্ণ তথ্য
+
+                </h2>
+
+                <ul
+                    class="mt-5 space-y-3
+                           text-sm text-slate-600
+                           dark:text-slate-300">
+
+                    <li>
+                        • যাত্রার কমপক্ষে ৩০ মিনিট আগে উপস্থিত হতে হবে।
+                    </li>
+
+                    <li>
+                        • Booking confirm হওয়ার পর cancellation policy
+                        প্রযোজ্য হবে।
+                    </li>
+
+                    <li>
+                        • আবহাওয়ার কারণে itinerary পরিবর্তিত হতে পারে।
+                    </li>
+
+                    <li>
+                        • শিশুদের জন্য package price আলাদা হতে পারে।
+                    </li>
+
+                </ul>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 REVIEWS
+            ================================================== -->
+
+            <section>
+
+                <div
+                    class="flex flex-col sm:flex-row
+                           justify-between gap-3 mb-6">
+
+                    <div>
+
+                        <h2 class="text-2xl font-extrabold">
+                            Traveller Reviews
+                        </h2>
+
+                        <div class="mt-2 text-sm">
+                            <span class="text-amber-500">
+                                ★★★★★
+                            </span>
+
+                            <b>4.9</b>
+
+                            <span class="text-slate-500">
+                                from 128 reviews
+                            </span>
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="border border-slate-300
+                               dark:border-slate-700
+                               px-5 py-2.5
+                               rounded-xl font-semibold">
+
+                        Review লিখুন
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="grid md:grid-cols-2
+                           gap-5">
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-5">
+
+                        <div class="text-amber-500">
+                            ★★★★★
+                        </div>
+
+                        <p
+                            class="text-sm text-slate-500
+                                   leading-7 mt-4">
+
+                            পুরো trip-টা খুব সুন্দর ছিল।
+                            Guide এবং transport দুটোই
+                            ভালো ছিল।
+
+                        </p>
+
+                        <div
+                            class="font-bold text-sm mt-4">
+
+                            — রাকিব হাসান
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-5">
+
+                        <div class="text-amber-500">
+                            ★★★★★
+                        </div>
+
+                        <p
+                            class="text-sm text-slate-500
+                                   leading-7 mt-4">
+
+                            Itinerary আগে থেকেই clear থাকায়
+                            family নিয়ে trip plan করা
+                            অনেক সহজ হয়েছে।
+
+                        </p>
+
+                        <div
+                            class="font-bold text-sm mt-4">
+
+                            — সাদিয়া রহমান
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================================
+                 FAQ
+            ================================================== -->
+
+            <section>
+
+                <h2 class="text-2xl font-extrabold mb-6">
+                    Frequently Asked Questions
+                </h2>
+
+
+                <div class="space-y-3">
+
+                    <details
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-5">
+
+                        <summary
+                            class="cursor-pointer
+                                   font-bold">
+
+                            Booking করার পর কীভাবে confirmation পাব?
+
+                        </summary>
+
+                        <p
+                            class="text-sm text-slate-500
+                                   mt-4 leading-7">
+
+                            Payment successful হওয়ার পর
+                            আপনার registered mobile/email-এ
+                            booking confirmation পাঠানো হবে।
+
+                        </p>
+
+                    </details>
+
+
+                    <details
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-5">
+
+                        <summary
+                            class="cursor-pointer
+                                   font-bold">
+
+                            Seat availability কি real-time?
+
+                        </summary>
+
+                        <p
+                            class="text-sm text-slate-500
+                                   mt-4 leading-7">
+
+                            হ্যাঁ। Confirmed booking অনুযায়ী
+                            available seat সংখ্যা automatically
+                            update হবে।
+
+                        </p>
+
+                    </details>
+
+
+                    <details
+                        class="bg-white dark:bg-slate-900
+                               border border-slate-200
+                               dark:border-slate-800
+                               rounded-2xl p-5">
+
+                        <summary
+                            class="cursor-pointer
+                                   font-bold">
+
+                            Cancellation policy কী?
+
+                        </summary>
+
+                        <p
+                            class="text-sm text-slate-500
+                                   mt-4 leading-7">
+
+                            Tour-এর departure date অনুযায়ী
+                            cancellation এবং refund policy
+                            প্রযোজ্য হবে।
+
+                        </p>
+
+                    </details>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+
+        <!-- =================================================
+             RIGHT BOOKING SIDEBAR
+        ================================================== -->
+
+        <aside class="lg:col-span-1">
+
+            <div
+                class="lg:sticky lg:top-24
+                       bg-white dark:bg-slate-900
+                       border border-slate-200
+                       dark:border-slate-800
+                       rounded-3xl
+                       shadow-lg
+                       overflow-hidden">
+
+
+                <!-- Price -->
+
+                <div class="p-6">
+
+                    <div class="text-sm text-slate-500">
+                        জনপ্রতি মূল্য
+                    </div>
+
+                    <div
+                        class="flex items-end gap-2 mt-1">
+
+                        <span
+                            class="text-3xl font-extrabold
+                                   text-teal-700">
+
+                            ৳ ৬,৫০০
+
+                        </span>
+
+                        <span
+                            class="text-sm
+                                   text-slate-400 mb-1">
+
+                            / জন
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- Departure -->
+
+                    <div
+                        class="mt-6
+                               bg-slate-50
+                               dark:bg-slate-800
+                               rounded-2xl p-4">
+
+                        <div
+                            class="text-xs text-slate-500">
+
+                            পরবর্তী যাত্রা
+
+                        </div>
+
+                        <div
+                            class="font-bold mt-1">
+
+                            📅 ১৫ অক্টোবর ২০২৬
+
+                        </div>
+
+                        <div
+                            class="text-xs text-slate-500 mt-1">
+
+                            ঢাকা → কক্সবাজার
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Slots -->
+
+                    <div class="mt-5">
+
+                        <div
+                            class="flex justify-between
+                                   text-sm">
+
+                            <span>
+                                Available Seats
+                            </span>
+
+                            <b class="text-red-500">
+                                ৮টি বাকি
+                            </b>
+
+                        </div>
+
+                        <div
+                            class="h-2 bg-slate-100
+                                   dark:bg-slate-800
+                                   rounded-full mt-2">
+
+                            <div
+                                class="h-full w-[73%]
+                                       bg-red-500
+                                       rounded-full">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Quantity -->
+
+                    <div class="mt-6">
+
+                        <label
+                            class="text-sm font-bold">
+
+                            কতজন যাবেন?
+
+                        </label>
+
+
+                        <div
+                            class="flex items-center
+                                   justify-between
+                                   border border-slate-200
+                                   dark:border-slate-700
+                                   rounded-xl mt-2 p-2">
+
+                            <button
+                                class="w-10 h-10
+                                       rounded-lg
+                                       bg-slate-100
+                                       dark:bg-slate-800">
+
+                                −
+
+                            </button>
+
+                            <span class="font-bold">
+                                2 জন
+                            </span>
+
+                            <button
+                                class="w-10 h-10
+                                       rounded-lg
+                                       bg-slate-100
+                                       dark:bg-slate-800">
+
+                                +
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Total -->
+
+                    <div
+                        class="flex justify-between
+                               border-t
+                               border-slate-200
+                               dark:border-slate-800
+                               mt-6 pt-5">
+
+                        <span class="text-slate-500">
+                            মোট
+                        </span>
+
+                        <span
+                            class="font-extrabold text-xl">
+
+                            ৳ ১৩,০০০
+
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        class="w-full mt-5
+                               bg-teal-700
+                               hover:bg-teal-800
+                               text-white
+                               py-4 rounded-xl
+                               font-bold text-lg">
+
+                        এখনই বুক করুন
+
+                    </button>
+
+
+                    <div
+                        class="text-center
+                               text-xs text-slate-400
+                               mt-3">
+
+                        🔒 Secure booking • No hidden charges
+
+                    </div>
+
+                </div>
+
+
+                <!-- Contact -->
+
+                <div
+                    class="border-t
+                           border-slate-200
+                           dark:border-slate-800
+                           p-5">
+
+                    <div class="text-sm font-bold">
+                        কোনো প্রশ্ন আছে?
+                    </div>
+
+                    <div
+                        class="flex gap-3 mt-3">
+
+                        <a
+                            href="#"
+                            class="flex-1 text-center
+                                   border border-slate-200
+                                   dark:border-slate-700
+                                   py-2.5 rounded-xl
+                                   text-sm font-semibold">
+
+                            💬 WhatsApp
+
+                        </a>
+
+                        <a
+                            href="#"
+                            class="flex-1 text-center
+                                   border border-slate-200
+                                   dark:border-slate-700
+                                   py-2.5 rounded-xl
+                                   text-sm font-semibold">
+
+                            📞 কল করুন
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</main>
+
+
+
+<!-- =====================================================
+     MOBILE STICKY BOOKING BAR
+===================================================== -->
+
+<div
+    class="lg:hidden fixed
+           bottom-0 left-0 right-0
+           z-50
+           bg-white/95
+           dark:bg-slate-950/95
+           backdrop-blur-xl
+           border-t border-slate-200
+           dark:border-slate-800
+           px-4 py-3">
+
+    <div
+        class="flex items-center
+               justify-between gap-3">
+
+        <div>
+
+            <div class="text-[11px] text-slate-500">
+                জনপ্রতি
+            </div>
+
+            <div
+                class="font-extrabold
+                       text-lg text-teal-700">
+
+                ৳ ৬,৫০০
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="flex-1 max-w-[220px]
+                   bg-teal-700
+                   text-white
+                   py-3
+                   rounded-xl
+                   font-bold">
+
+            এখনই বুক করুন
+
+        </button>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     THEME
+===================================================== -->
+
+<script>
+
+    const themeToggle =
+        document.getElementById('themeToggle');
+
+    themeToggle.addEventListener('click', () => {
+
+        document.documentElement.classList.toggle('dark');
+
+        const dark =
+            document.documentElement.classList.contains('dark');
+
+        localStorage.setItem(
+            'theme',
+            dark ? 'dark' : 'light'
+        );
+
+        themeToggle.innerHTML =
+            dark ? '🌙' : '☀️';
+
+    });
+
+
+    if (
+        localStorage.getItem('theme') === 'dark'
+    ) {
+
+        document.documentElement.classList.add('dark');
+
+        themeToggle.innerHTML = '🌙';
+
+    }
+
+</script>
+
+</body>
+
+</html>

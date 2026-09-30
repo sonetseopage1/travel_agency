@@ -1,0 +1,182 @@
+@extends('layouts.admin')
+
+@section('title', 'Booking Details')
+@section('breadcrumb', 'Bookings / Details')
+@section('page-title', 'বুকিং বিস্তারিত')
+
+@section('content')
+
+@php
+    $statusClass = match ($booking->status) {
+        'confirmed' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400',
+        'pending' => 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400',
+        'cancelled' => 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400',
+        'completed' => 'bg-blue-100 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400',
+        default => 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+    };
+    $payClass = match ($booking->payment_status) {
+        'paid' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400',
+        'partial' => 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400',
+        'unpaid' => 'bg-red-100 text-red-700 dark:bg-red-500/10 dark:text-red-400',
+        default => 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+    };
+    $initials = strtoupper(substr($booking->customer_name ?? 'CU', 0, 2));
+@endphp
+
+@if (session('success'))
+    <div class="mb-6 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-sm px-4 py-3">
+        {{ session('success') }}
+    </div>
+@endif
+
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+    <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-teal-700 text-white flex items-center justify-center text-xl font-bold">
+            {{ $initials }}
+        </div>
+        <div>
+            <h2 class="text-2xl font-extrabold">Booking #{{ $booking->id }}</h2>
+            <p class="text-sm text-slate-500 mt-1">
+                {{ \Carbon\Carbon::parse($booking->created_at)->format('d M Y, h:i A') }}
+            </p>
+        </div>
+    </div>
+    <a href="{{ route('admin.bookings.index') }}"
+        class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+        ← সব বুকিং
+    </a>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 space-y-6">
+
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+            <h3 class="font-bold text-lg mb-5">গ্রাহকের তথ্য</h3>
+            <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-5 text-sm">
+                <div>
+                    <dt class="small-label">পুরো নাম</dt>
+                    <dd class="font-semibold">{{ $booking->customer_name ?? '-' }}</dd>
+                </div>
+                <div>
+                    <dt class="small-label">ইমেইল</dt>
+                    <dd class="font-semibold">{{ $booking->customer_email ?? '-' }}</dd>
+                </div>
+                <div>
+                    <dt class="small-label">মোবাইল নম্বর</dt>
+                    <dd class="font-semibold">{{ $booking->customer_phone ?? '-' }}</dd>
+                </div>
+                <div>
+                    <dt class="small-label">যাত্রীর সংখ্যা</dt>
+                    <dd class="font-semibold">{{ $booking->guest_count ?? 1 }} জন</dd>
+                </div>
+            </dl>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+            <h3 class="font-bold text-lg mb-5">ট্যুরের তথ্য</h3>
+            @if ($booking->tour)
+                <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-5 text-sm">
+                    <div class="sm:col-span-2">
+                        <dt class="small-label">ট্যুর</dt>
+                        <dd class="font-semibold">
+                            <a href="{{ route('tours.show', $booking->tour->slug) }}" target="_blank" rel="noopener"
+                                class="text-teal-700 hover:underline">
+                                {{ $booking->tour->title }} ↗
+                            </a>
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="small-label">গন্তব্য</dt>
+                        <dd class="font-semibold">{{ $booking->tour->location ?: '—' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="small-label">ভ্রমণের তারিখ</dt>
+                        <dd class="font-semibold">
+                            {{ $booking->tour->departure_date ? \Carbon\Carbon::parse($booking->tour->departure_date)->format('d M Y') : '—' }}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="small-label">প্রতি জনের দাম</dt>
+                        <dd class="font-semibold">৳ {{ number_format($booking->tour->price_per_person ?? 0) }}</dd>
+                    </div>
+                    <div>
+                        <dt class="small-label">যাত্রা</dt>
+                        <dd class="font-semibold">
+                            {{ $booking->tour->transport_icon ?? '🚌' }} {{ $booking->tour->transport_type ?? '—' }}
+                        </dd>
+                    </div>
+                </dl>
+            @else
+                <p class="text-sm text-slate-500">এই বুকিংয়ের সাথে কোনো ট্যুর যুক্ত নেই।</p>
+            @endif
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+            <h3 class="font-bold text-lg mb-5">পেমেন্ট ও বিশেষ নোট</h3>
+            <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-5 text-sm">
+                <div>
+                    <dt class="small-label">পেমেন্ট মেথড</dt>
+                    <dd class="font-semibold">{{ $booking->payment_method ?: '—' }}</dd>
+                </div>
+                <div>
+                    <dt class="small-label">ট্রানজেকশন আইডি</dt>
+                    <dd class="font-semibold">{{ $booking->transaction_id ?: '—' }}</dd>
+                </div>
+                <div class="sm:col-span-2">
+                    <dt class="small-label">বিশেষ অনুরোধ</dt>
+                    <dd class="font-semibold leading-7">{{ $booking->special_notes ?: 'কোনো বিশেষ অনুরোধ নেই।' }}</dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+    <aside class="space-y-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+            <h3 class="font-bold mb-5">সারসংক্ষেপ</h3>
+
+            <div class="flex items-center justify-between mb-3">
+                <span class="text-sm text-slate-500">স্ট্যাটাস</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusClass }}">
+                    {{ ucfirst($booking->status ?? 'Pending') }}
+                </span>
+            </div>
+            <div class="flex items-center justify-between mb-5">
+                <span class="text-sm text-slate-500">পেমেন্ট</span>
+                <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $payClass }}">
+                    {{ ucfirst($booking->payment_status ?? 'Unpaid') }}
+                </span>
+            </div>
+
+            <div class="border-t border-slate-200 dark:border-slate-800 pt-5">
+                <p class="text-sm text-slate-500">সর্বমোট</p>
+                <p class="text-3xl font-extrabold text-teal-700 mt-1">
+                    ৳{{ number_format($booking->total_price ?? 0) }}
+                </p>
+            </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+            <h3 class="font-bold mb-4">স্ট্যাটাস পরিবর্তন করুন</h3>
+            <form method="POST" action="{{ route('admin.bookings.status', $booking->id) }}" class="space-y-4">
+                @csrf
+                @method('PATCH')
+                <div>
+                    <label for="status" class="label">নতুন স্ট্যাটাস</label>
+                    <select id="status" name="status" class="input">
+                        @foreach (['pending', 'confirmed', 'cancelled', 'completed'] as $option)
+                            <option value="{{ $option }}" @selected(($booking->status ?? 'pending') === $option)>
+                                {{ ucfirst($option) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit"
+                    class="w-full bg-teal-700 hover:bg-teal-800 text-white font-semibold py-2.5 rounded-xl transition">
+                    আপডেট করুন
+                </button>
+            </form>
+        </div>
+    </aside>
+</div>
+
+@endsection
