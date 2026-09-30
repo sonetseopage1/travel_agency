@@ -159,16 +159,56 @@ class BookingController extends Controller
         return view('admin.bookings.show', compact('booking'));
     }
 
-    public function updateStatus(Request $request, $id)
+    /**
+     * Update a booking's status and/or payment details.
+     */
+    public function update(Request $request, $id): RedirectResponse
     {
-        $request->validate([
+        $validated = $request->validate([
             'status' => 'required|in:pending,confirmed,cancelled,completed',
+            'payment_status' => 'required|in:unpaid,partial,paid',
+            'payment_method' => 'nullable|string|max:50',
+            'transaction_id' => 'nullable|string|max:100',
+        ], [
+            'status.required' => 'বুকিং স্ট্যাটাস নির্বাচন করুন।',
+            'status.in' => 'বুকিং স্ট্যাটাসটি সঠিক নয়।',
+            'payment_status.required' => 'পেমেন্ট স্ট্যাটাস নির্বাচন করুন।',
+            'payment_status.in' => 'পেমেন্ট স্ট্যাটাসটি সঠিক নয়।',
         ]);
 
-        $booking = Booking::findOrFail($id);
-        $booking->status = $request->input('status');
-        $booking->save();
+        $booking = Booking::with('tour')->findOrFail($id);
+        $newStatus = $validated['status'];
+        $wasCancelled = $booking->status === 'cancelled';
+        $willCancel = $newStatus === 'cancelled';
 
-        return back()->with('success', 'Booking status updated!');
+        try {
+            DB::transaction(function () use ($booking, $validated, $newStatus, $wasCancelled, $willCancel) {
+                $lockedTour = Tour::whereKey($booking->tour_id)->lockForUpdate()->first();
+
+                // Cancelling frees the seats; un-cancelling takes them back.
+                if ($wasCancelled && ! $willCancel && $lockedTour) {
+                    $available = ($lockedTour->max_slots ?? 0) - ($lockedTour->current_booked ?? 0);
+
+                    if ($available < $booking->guest_count) {
+                        throw new InsufficientSeatsException($available);
+                    }
+
+                    $lockedTour->increment('current_booked', $booking->guest_count);
+                } elseif (! $wasCancelled && $willCancel && $lockedTour) {
+                    $lockedTour->decrement('current_booked', $booking->guest_count);
+                }
+
+                $booking->status = $newStatus;
+                $booking->payment_status = $validated['payment_status'];
+                $booking->payment_method = $validated['payment_method'] ?? $booking->payment_method;
+                $booking->transaction_id = $validated['transaction_id'] ?? $booking->transaction_id;
+                $booking->save();
+            });
+        } catch (InsufficientSeatsException $e) {
+            return redirect()->back()
+                ->with('error', 'বুকিং পুনরায় চালু করা যায়নি — ট্যুরে পর্যাপ্ত সিট নেই। ফাকা আছে মাত্র '.$e->available.'টি।');
+        }
+
+        return back()->with('success', 'বুকিং ও পেমেন্ট তথ্য আপডেট হয়েছে।');
     }
 }

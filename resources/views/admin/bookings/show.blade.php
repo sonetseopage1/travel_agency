@@ -29,6 +29,22 @@
     </div>
 @endif
 
+@if (session('error'))
+    <div class="mb-6 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm px-4 py-3">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="mb-6 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-sm px-4 py-3">
+        <ul class="list-disc ps-5 space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div class="flex items-center gap-4">
         <div class="w-14 h-14 rounded-2xl bg-teal-700 text-white flex items-center justify-center text-xl font-bold">
@@ -156,13 +172,14 @@
         </div>
 
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
-            <h3 class="font-bold mb-4">স্ট্যাটাস পরিবর্তন করুন</h3>
+            <h3 class="font-bold mb-4">স্ট্যাটাস ও পেমেন্ট আপডেট করুন</h3>
             <form method="POST" action="{{ route('admin.bookings.status', $booking->id) }}" class="space-y-4">
                 @csrf
                 @method('PATCH')
+
                 <div>
-                    <label for="status" class="label">নতুন স্ট্যাটাস</label>
-                    <select id="status" name="status" class="input">
+                    <label for="status" class="label">বুকিং স্ট্যাটাস</label>
+                    <select id="status" name="status" class="input" required>
                         @foreach (['pending', 'confirmed', 'cancelled', 'completed'] as $option)
                             <option value="{{ $option }}" @selected(($booking->status ?? 'pending') === $option)>
                                 {{ ucfirst($option) }}
@@ -170,6 +187,40 @@
                         @endforeach
                     </select>
                 </div>
+
+                <div>
+                    <label for="payment_status" class="label">পেমেন্ট স্ট্যাটাস</label>
+                    <select id="payment_status" name="payment_status" class="input" required>
+                        @foreach (['unpaid' => 'Unpaid', 'partial' => 'Partial', 'paid' => 'Paid'] as $option => $label)
+                            <option value="{{ $option }}" @selected(($booking->payment_status ?? 'unpaid') === $option)>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="payment_method" class="label">পেমেন্ট মেথড</label>
+                    <select id="payment_method" name="payment_method" class="input">
+                        <option value="">পরিবর্তন না</option>
+                        @foreach (['Cash', 'bKash', 'Nagad', 'Rocket', 'Card', 'Bank Transfer'] as $method)
+                            <option value="{{ $method }}" @selected(($booking->payment_method ?? '') === $method)>
+                                {{ $method }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label for="transaction_id" class="label">ট্রানজেকশন আইডি</label>
+                    <input id="transaction_id" name="transaction_id" value="{{ $booking->transaction_id }}"
+                        class="input" placeholder="পরিবর্তন না">
+                </div>
+
+                <p class="text-xs text-slate-500 leading-6">
+                    বুকিং বাতিল করলে ট্যুরের সিট স্বয়ংক্রিয়ভাবে ফেরত আসবে।
+                </p>
+
                 <button type="submit"
                     class="w-full bg-teal-700 hover:bg-teal-800 text-white font-semibold py-2.5 rounded-xl transition">
                     আপডেট করুন
