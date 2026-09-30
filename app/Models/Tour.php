@@ -26,6 +26,25 @@ class Tour extends Model
         'historical',
     ];
 
+    /**
+     * Suggestions offered by the admin transport field.
+     *
+     * This is guidance only, not a whitelist: the column stores free text so a
+     * tour can say "AC Bus" or "ট্রেন + লঞ্চ", and getTransportIconAttribute()
+     * matches on substrings.
+     *
+     * @var list<string>
+     */
+    public const TRANSPORT_TYPES = [
+        'AC Bus',
+        'বাস',
+        'জিপ',
+        'ট্রেন',
+        'ফ্লাইট',
+        'নৌকা',
+        'লঞ্চ',
+    ];
+
     protected $fillable = [
         'title',
         'slug',
@@ -245,13 +264,44 @@ class Tour extends Model
 
     public function getTransportIconAttribute(): string
     {
+        return static::transportIconFor($this->transport_type);
+    }
+
+    /**
+     * Icon for a transport type.
+     *
+     * Shared by the display accessor and the admin select options so both
+     * always agree. Matches on substrings, so "ট্রেন + লঞ্চ" still resolves.
+     */
+    public static function transportIconFor(?string $transport): string
+    {
         return match (true) {
-            str_contains((string) $this->transport_type, 'ফ্লাই') => '✈️',
-            str_contains((string) $this->transport_type, 'জিপ') => '🚙',
-            str_contains((string) $this->transport_type, 'ট্রেন') => '🚆',
-            str_contains((string) $this->transport_type, 'নৌকা') => '🚢',
-            str_contains((string) $this->transport_type, 'লঞ্চ') => '🚢',
+            str_contains((string) $transport, 'ফ্লাই') => '✈️',
+            str_contains((string) $transport, 'জিপ') => '🚙',
+            str_contains((string) $transport, 'ট্রেন') => '🚆',
+            str_contains((string) $transport, 'নৌকা') => '🚢',
+            str_contains((string) $transport, 'লঞ্চ') => '🚢',
             default => '🚌',
         };
+    }
+
+    /**
+     * The options offered by the admin transport select.
+     *
+     * A value already stored on the tour is kept in the list even when it is
+     * not one of the suggestions, so editing a tour never silently discards
+     * an unusual value.
+     *
+     * @return list<string>
+     */
+    public static function transportOptions(?string $current = null): array
+    {
+        $options = self::TRANSPORT_TYPES;
+
+        if (is_string($current) && $current !== '' && ! in_array($current, $options, true)) {
+            array_unshift($options, $current);
+        }
+
+        return $options;
     }
 }

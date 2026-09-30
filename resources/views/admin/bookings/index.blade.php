@@ -6,10 +6,20 @@
 
 @section('content')
 
+@if (session('success'))
+    <div class="mb-6 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-sm px-4 py-3">
+        {{ session('success') }}
+    </div>
+@endif
+
+@php
+    $hasFilter = request()->filled('search') || request()->filled('status') || request()->filled('payment_status') || request()->filled('tour_id');
+@endphp
+
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
         <p class="text-sm text-slate-500">Total Bookings</p>
-        <h3 class="text-2xl font-bold mt-2">{{ count($bookings) }}</h3>
+        <h3 class="text-2xl font-bold mt-2">{{ $totalCount }}</h3>
     </div>
     <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
         <p class="text-sm text-slate-500">Confirmed</p>
@@ -30,21 +40,57 @@
         <h2 class="text-2xl font-extrabold">All Bookings</h2>
         <p class="text-sm text-slate-500 mt-1">সব booking এখান থেকে manage করুন।</p>
     </div>
-    <div class="flex gap-2">
-        <a href="{{ route('admin.bookings.create') }}"
-            class="px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-sm font-semibold whitespace-nowrap transition">
-            + নতুন বুকিং
-        </a>
-        <input type="text" placeholder="Search customer, tour..." class="input w-full sm:w-64">
-        <select class="input w-full sm:w-40">
-            <option>All Status</option>
-            <option>Confirmed</option>
-            <option>Pending</option>
-            <option>Cancelled</option>
-            <option>Completed</option>
-        </select>
-    </div>
+    <a href="{{ route('admin.bookings.create') }}"
+        class="px-4 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-sm font-semibold whitespace-nowrap transition">
+        + নতুন বুকিং
+    </a>
 </div>
+
+<form method="GET" action="{{ route('admin.bookings.index') }}"
+    class="flex flex-col sm:flex-row gap-3 mb-6">
+    <input type="text" name="search" value="{{ request('search') }}"
+        placeholder="Search customer, phone or tour..."
+        class="input w-full sm:w-72">
+    <select name="status" class="input w-full sm:w-40">
+        <option value="">All Status</option>
+        @foreach (\App\Models\Booking::STATUSES as $option)
+            <option value="{{ $option }}" @selected(request('status') === $option)>
+                {{ ucfirst($option) }}
+            </option>
+        @endforeach
+    </select>
+    <select name="payment_status" class="input w-full sm:w-40">
+        <option value="">All Payments</option>
+        @foreach (\App\Models\Booking::PAYMENT_STATUSES as $option)
+            <option value="{{ $option }}" @selected(request('payment_status') === $option)>
+                {{ ucfirst($option) }}
+            </option>
+        @endforeach
+    </select>
+    <select name="tour_id" class="input w-full sm:w-56">
+        <option value="">All Tours</option>
+        @foreach ($tours as $tour)
+            <option value="{{ $tour->id }}" @selected((string) request('tour_id') === (string) $tour->id)>
+                {{ $tour->title }}
+            </option>
+        @endforeach
+    </select>
+    <button type="submit" class="px-5 py-2.5 rounded-xl bg-slate-800 dark:bg-slate-700 text-white text-sm font-semibold">
+        ফিল্টার
+    </button>
+    @if ($hasFilter)
+        <a href="{{ route('admin.bookings.index') }}"
+            class="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+            রিসেট
+        </a>
+    @endif
+</form>
+
+@if ($hasFilter)
+    <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">
+        ফিল্টার অনুযায়ী {{ $bookings->total() }}টি বুকিং পাওয়া গেছে।
+    </p>
+@endif
 
 <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
     <div class="hidden md:block overflow-x-auto">
@@ -76,6 +122,7 @@
                         'paid' => 'bg-emerald-100 text-emerald-700',
                         'partial' => 'bg-amber-100 text-amber-700',
                         'unpaid' => 'bg-red-100 text-red-700',
+                        'refunded' => 'bg-slate-200 text-slate-700',
                         default => 'bg-slate-100 text-slate-700',
                     };
                     $initials = strtoupper(substr(($booking->customer_name ?? 'CU'), 0, 2));
@@ -109,7 +156,7 @@
                                 @method('PATCH')
                                 <select name="status" onchange="this.form.submit()"
                                     class="px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
-                                    @foreach (['confirmed', 'pending', 'cancelled', 'completed'] as $option)
+                                    @foreach (\App\Models\Booking::STATUSES as $option)
                                         <option value="{{ $option }}" @selected(($booking->status ?? 'pending') === $option)>
                                             {{ ucfirst($option) }}
                                         </option>
@@ -160,5 +207,9 @@
         @endif
     </div>
 </div>
+
+@if ($bookings->hasPages())
+    <div class="mt-6">{{ $bookings->links() }}</div>
+@endif
 
 @endsection

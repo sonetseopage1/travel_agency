@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BlogPost;
 use App\Models\ContactMessage;
 use App\Models\Destination;
+use App\Models\GalleryPhoto;
 use App\Models\Review;
 use App\Models\Tour;
 use Illuminate\Http\Request;
@@ -15,6 +17,8 @@ class HomeController extends Controller
         $tours = collect([]);
         $destinations = collect([]);
         $reviews = collect([]);
+        $galleryPhotos = collect([]);
+        $blogPosts = collect([]);
 
         if (class_exists(Tour::class)) {
             $tours = Tour::where('status', 'published')
@@ -35,6 +39,20 @@ class HomeController extends Controller
         if (class_exists(Review::class)) {
             $reviews = Review::where('is_approved', true)
                 ->latest()
+                ->limit(3)
+                ->get();
+        }
+
+        if (class_exists(GalleryPhoto::class)) {
+            $galleryPhotos = GalleryPhoto::active()
+                ->ordered()
+                ->limit(8)
+                ->get();
+        }
+
+        if (class_exists(BlogPost::class)) {
+            $blogPosts = BlogPost::published()
+                ->ordered()
                 ->limit(3)
                 ->get();
         }
@@ -153,7 +171,13 @@ class HomeController extends Controller
             ]);
         }
 
-        return view('frontend.home', compact('tours', 'destinations', 'reviews'));
+        return view('frontend.home', compact(
+            'tours',
+            'destinations',
+            'reviews',
+            'galleryPhotos',
+            'blogPosts',
+        ));
     }
 
     public function contactSubmit(Request $request)

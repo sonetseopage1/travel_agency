@@ -7,9 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\PromoCode;
 use App\Models\Tour;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class BookingController extends Controller
@@ -18,22 +20,51 @@ class BookingController extends Controller
     {
         $query = Booking::with('tour');
 
-        if ($search = $request->input('search')) {
-            $query->where('customer_name', 'like', "%{$search}%")
-                ->orWhere('customer_email', 'like', "%{$search}%");
+        // Grouped so the status filter below narrows the search results too.
+        // Un-grouped, SQL binds AND tighter than OR and the status filter is
+        // silently ignored.
+        if ($search = trim((string) $request->input('search'))) {
+            $query->where(function (Builder $q) use ($search) {
+                $q->where('customer_name', 'like', "%{$search}%")
+                    ->orWhere('customer_email', 'like', "%{$search}%")
+                    ->orWhere('customer_phone', 'like', "%{$search}%")
+                    ->orWhereHas('tour', fn (Builder $t) => $t->where('title', 'like', "%{$search}%"));
+            });
         }
 
         if ($status = $request->input('status')) {
             $query->where('status', $status);
         }
 
-        $bookings = $query->latest()->paginate(20);
+        if ($payment = $request->input('payment_status')) {
+            $query->where('payment_status', $payment);
+        }
+
+        if ($tourId = $request->input('tour_id')) {
+            $query->where('tour_id', $tourId);
+        }
+
+        // withQueryString keeps the active filters when moving to page 2+.
+        $bookings = $query->latest()->paginate(20)->withQueryString();
 
         $confirmedCount = Booking::where('status', 'confirmed')->count();
         $pendingCount = Booking::where('status', 'pending')->count();
         $cancelledCount = Booking::where('status', 'cancelled')->count();
 
-        return view('admin.bookings.index', compact('bookings', 'confirmedCount', 'pendingCount', 'cancelledCount'));
+        // Counted separately from $bookings->total(), which is the filtered
+        // count while a filter is active.
+        $totalCount = Booking::count();
+
+        $tours = Tour::orderBy('title')->get(['id', 'title']);
+
+        return view('admin.bookings.index', compact(
+            'bookings',
+            'confirmedCount',
+            'pendingCount',
+            'cancelledCount',
+            'totalCount',
+            'tours',
+        ));
     }
 
     public function create(): View
@@ -59,8 +90,8 @@ class BookingController extends Controller
             'customer_email' => 'required|email|max:255',
             'customer_phone' => 'required|string|max:20',
             'guest_count' => 'required|integer|min:1',
-            'status' => 'required|in:pending,confirmed,cancelled,completed',
-            'payment_status' => 'required|in:unpaid,partial,paid',
+            'status' => ['required', Rule::in(Booking::STATUSES)],
+            'payment_status' => ['required', Rule::in(Booking::PAYMENT_STATUSES)],
             'payment_method' => 'nullable|string|max:50',
             'transaction_id' => 'nullable|string|max:100',
             'promo_code' => 'nullable|string|max:50',
@@ -165,8 +196,8 @@ class BookingController extends Controller
     public function update(Request $request, $id): RedirectResponse
     {
         $validated = $request->validate([
-            'status' => 'required|in:pending,confirmed,cancelled,completed',
-            'payment_status' => 'required|in:unpaid,partial,paid',
+            'status' => ['required', Rule::in(Booking::STATUSES)],
+            'payment_status' => ['required', Rule::in(Booking::PAYMENT_STATUSES)],
             'payment_method' => 'nullable|string|max:50',
             'transaction_id' => 'nullable|string|max:100',
         ], [

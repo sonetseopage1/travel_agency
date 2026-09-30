@@ -10,7 +10,12 @@
         $ogTitle = \App\Models\Setting::string('og_title') ?: $metaTitle;
         $ogDescription = \App\Models\Setting::string('og_description') ?: $metaDescription;
         $favicon = \App\Models\Setting::image('favicon');
-        $ogImage = \App\Models\Setting::image('og_image');
+        $defaultOgImage = \App\Models\Setting::image('og_image');
+
+        // A page may override the share image (a blog post uses its cover).
+        $ogImage = View::hasSection('og_image')
+            ? (string) $__env->yieldContent('og_image')
+            : $defaultOgImage;
     @endphp
 
     <meta charset="UTF-8">
@@ -162,6 +167,12 @@
                         <a href="{{ route('home') }}#destinations" class="hover:text-teal-600">
                             গন্তব্য
                         </a>
+                        <a href="{{ route('gallery.index') }}" class="hover:text-teal-600">
+                            গ্যালারি
+                        </a>
+                        <a href="{{ route('blog.index') }}" class="hover:text-teal-600">
+                            ব্লগ
+                        </a>
                         <a href="{{ route('home') }}#about" class="hover:text-teal-600">
                             আমাদের সম্পর্কে
                         </a>
@@ -222,6 +233,14 @@
                     <a href="{{ route('home') }}#destinations"
                         class="block px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
                         গন্তব্য
+                    </a>
+                    <a href="{{ route('gallery.index') }}"
+                        class="block px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        গ্যালারি
+                    </a>
+                    <a href="{{ route('blog.index') }}"
+                        class="block px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                        ব্লগ
                     </a>
                     <a href="{{ route('home') }}#about"
                         class="block px-4 py-3 rounded-xl text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
@@ -345,6 +364,12 @@
                         </a>
                         <a href="{{ route('home') }}#destinations" class="block hover:text-white">
                             গন্তব্য
+                        </a>
+                        <a href="{{ route('gallery.index') }}" class="block hover:text-white">
+                            গ্যালারি
+                        </a>
+                        <a href="{{ route('blog.index') }}" class="block hover:text-white">
+                            ব্লগ
                         </a>
                         <a href="#" class="block hover:text-white">
                             সফল ভ্রমণ

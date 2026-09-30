@@ -124,6 +124,24 @@
             @endif
         </a>
 
+        <a href="{{ route('admin.gallery.index') }}"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 {{ request()->routeIs('admin.gallery.*') ? 'bg-teal-700 text-white' : '' }}">
+            <span>🖼️</span> Gallery
+            @php $galleryCount = \App\Models\GalleryPhoto::count(); @endphp
+            @if($galleryCount > 0)
+            <span class="ml-auto text-xs bg-white/10 px-2 py-1 rounded-full">{{ $galleryCount }}</span>
+            @endif
+        </a>
+
+        <a href="{{ route('admin.blog.index') }}"
+           class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 {{ request()->routeIs('admin.blog.*') ? 'bg-teal-700 text-white' : '' }}">
+            <span>📝</span> Blog
+            @php $postCount = \App\Models\BlogPost::count(); @endphp
+            @if($postCount > 0)
+            <span class="ml-auto text-xs bg-white/10 px-2 py-1 rounded-full">{{ $postCount }}</span>
+            @endif
+        </a>
+
         <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5">
             <span>👥</span> Travellers / Customers
         </a>

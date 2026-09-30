@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             BookingSeeder::class,
             PromoCodeSeeder::class,
+            GallerySeeder::class,
+            BlogPostSeeder::class,
         ]);
     }
 }

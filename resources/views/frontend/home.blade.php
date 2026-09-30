@@ -185,6 +185,87 @@
         </div>
     </section>
 
+    <section id="gallery" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+            <div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold">ভ্রমণের ছবি</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-3">আমাদের ট্যুরের কিছু মুহূর্ত</p>
+            </div>
+            <a href="{{ route('gallery.index') }}"
+                class="text-teal-700 dark:text-teal-400 font-bold hover:underline shrink-0">
+                সব ছবি দেখুন →
+            </a>
+        </div>
+
+        @if ($galleryPhotos->isNotEmpty())
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                @foreach ($galleryPhotos as $photo)
+                    <a href="{{ route('gallery.show', $photo) }}"
+                        class="group relative aspect-square rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800">
+                        <img src="{{ $photo->image_url }}" alt="{{ $photo->alt_text ?: $photo->displayTitle() }}"
+                            loading="lazy"
+                            class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    </a>
+                @endforeach
+            </div>
+        @else
+            <p class="text-slate-500 dark:text-slate-400">
+                গ্যালারি সেকশনে এখনো কোনো ছবি যোগ করা হয়নি।
+            </p>
+        @endif
+    </section>
+
+    <section id="blog" class="bg-slate-100 dark:bg-slate-900 py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold">ট্রাভেল ব্লগ</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-3">গন্তব্য পরিচিতি ও ভ্রমণের গাইড</p>
+                </div>
+                <a href="{{ route('blog.index') }}"
+                    class="text-teal-700 dark:text-teal-400 font-bold hover:underline shrink-0">
+                    সব পোস্ট দেখুন →
+                </a>
+            </div>
+
+            @if ($blogPosts->isNotEmpty())
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    @foreach ($blogPosts as $post)
+                        <article
+                            class="flex flex-col bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition">
+                            <a href="{{ route('blog.show', $post) }}" class="block h-48 overflow-hidden bg-slate-100 dark:bg-slate-900">
+                                <img src="{{ $post->cover_image_url }}" alt="{{ $post->title }}" loading="lazy"
+                                    class="w-full h-full object-cover hover:scale-105 transition duration-500">
+                            </a>
+                            <div class="p-6 flex flex-col flex-1">
+                                @if ($post->category)
+                                    <span class="self-start px-3 py-1 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400 text-xs font-bold">
+                                        {{ $post->category }}
+                                    </span>
+                                @endif
+                                <h3 class="font-bold text-lg mt-3 leading-7">
+                                    <a href="{{ route('blog.show', $post) }}" class="hover:text-teal-700 transition">
+                                        {{ $post->title }}
+                                    </a>
+                                </h3>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-3 leading-7 flex-1">
+                                    {{ $post->summary(110) }}
+                                </p>
+                                @if ($post->published_at)
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-5">
+                                        {{ $post->published_at->format('j M Y') }}
+                                    </p>
+                                @endif
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-slate-500 dark:text-slate-400">এখনো কোনো ব্লগ পোস্ট প্রকাশ করা হয়নি।</p>
+            @endif
+        </div>
+    </section>
+
     <section id="contact" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div class="grid lg:grid-cols-2 gap-14">
             <div>

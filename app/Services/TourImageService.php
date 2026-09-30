@@ -2,10 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\BlogPost;
 use App\Models\Destination;
+use App\Models\GalleryPhoto;
+use App\Models\Setting;
 use App\Models\Tour;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 /**
@@ -93,13 +97,28 @@ class TourImageService
     }
 
     /**
-     * Is any tour or destination still using this path?
+     * Is any tour, destination, gallery, blog or setting still using this path?
+     *
+     * Tables are probed with hasTable guards so the service stays usable
+     * while migrations are still being applied.
      *
      * Gallery values are JSON, so they are compared in PHP rather than with a
      * SQL LIKE, which could match one filename inside another.
      */
     private function isStillReferenced(string $path): bool
     {
+        if (Schema::hasTable('gallery_photos') && GalleryPhoto::where('image', $path)->exists()) {
+            return true;
+        }
+
+        if (Schema::hasTable('blog_posts') && BlogPost::where('cover_image', $path)->exists()) {
+            return true;
+        }
+
+        if (Setting::query()->where('value', $path)->exists()) {
+            return true;
+        }
+
         if (Tour::where('cover_image', $path)->exists()) {
             return true;
         }

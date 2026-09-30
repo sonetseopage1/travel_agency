@@ -7,6 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Booking extends Model
 {
+    /**
+     * Valid booking states. Shared by the admin filter, the status dropdowns
+     * and the validation rules so all three always agree.
+     *
+     * @var list<string>
+     */
+    public const STATUSES = ['pending', 'confirmed', 'cancelled', 'completed'];
+
+    /**
+     * Valid payment states.
+     *
+     * `refunded` is included because cancelled bookings are marked as such,
+     * and the admin filter has to be able to select it.
+     *
+     * @var list<string>
+     */
+    public const PAYMENT_STATUSES = ['unpaid', 'partial', 'paid', 'refunded'];
+
     protected $fillable = [
         'tour_id',
         'customer_name',

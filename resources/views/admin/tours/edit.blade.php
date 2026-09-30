@@ -137,6 +137,21 @@
                     <label class="label">Meeting Point</label>
                     <input type="text" name="meeting_point" class="input" value="{{ old('meeting_point', $tour->meeting_point) }}">
                 </div>
+                <div>
+                    <label class="label">Transport Type</label>
+                    @php $transportValue = old('transport_type', $tour->transport_type); @endphp
+                    <select name="transport_type" class="input">
+                        <option value="" @selected(! $transportValue)>— নির্বাচন করুন —</option>
+                        @foreach (\App\Models\Tour::transportOptions($transportValue) as $option)
+                            <option value="{{ $option }}" @selected($transportValue === $option)>
+                                {{ \App\Models\Tour::transportIconFor($option) }} {{ $option }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('transport_type')
+                        <p class="mt-1.5 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
         </section>
 
