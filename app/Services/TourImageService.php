@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Destination;
 use App\Models\Tour;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
@@ -61,12 +62,19 @@ class TourImageService
     }
 
     /**
-     * Delete a stored image. Remote URLs and paths outside public/images are
-     * left alone so this is always safe to call on existing data.
+     * Delete a stored image, unless something still points at it.
+     *
+     * Seeded photos are shared between several tours and destinations, so a
+     * file is only unlinked once no record references it. Remote URLs and
+     * paths outside public/images are always left alone.
      */
     public function delete(?string $path): void
     {
         if (! Tour::isLocalImage($path)) {
+            return;
+        }
+
+        if ($this->isStillReferenced((string) $path)) {
             return;
         }
 
@@ -82,6 +90,38 @@ class TourImageService
         if (is_file($absolute)) {
             File::delete($absolute);
         }
+    }
+
+    /**
+     * Is any tour or destination still using this path?
+     *
+     * Gallery values are JSON, so they are compared in PHP rather than with a
+     * SQL LIKE, which could match one filename inside another.
+     */
+    private function isStillReferenced(string $path): bool
+    {
+        if (Tour::where('cover_image', $path)->exists()) {
+            return true;
+        }
+
+        if (Destination::where('image', $path)->exists()) {
+            return true;
+        }
+
+        $inGallery = Tour::query()
+            ->select('id', 'gallery')
+            ->cursor()
+            ->contains(function ($tour) use ($path) {
+                foreach ((array) $tour->gallery as $image) {
+                    if ($image === $path) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+        return $inGallery;
     }
 
     /**

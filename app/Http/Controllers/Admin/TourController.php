@@ -132,11 +132,11 @@ class TourController extends Controller
         $tour->max_slots = $this->input($request, 'max_slots', $this->input($request, 'max_slots_sidebar', 30));
         $tour->current_booked = $this->input($request, 'current_booked', $this->input($request, 'current_booked_sidebar', 0));
 
-        $tour->includes = json_encode($request->input('includes', []) ?: []);
-        $tour->excludes = json_encode($request->input('excludes', []) ?: []);
-        $tour->important_info = json_encode($request->input('important_info', []) ?: []);
-        $tour->faqs = json_encode($request->input('faqs', []) ?: []);
-        $tour->features = json_encode($request->input('features', []) ?: []);
+        $tour->includes = $this->listInput($request, 'includes');
+        $tour->excludes = $this->listInput($request, 'excludes');
+        $tour->important_info = $this->listInput($request, 'important_info');
+        $tour->faqs = $this->listInput($request, 'faqs');
+        $tour->features = $this->listInput($request, 'features');
 
         if ($request->hasFile('cover_image')) {
             $tour->cover_image = $this->images->store($request->file('cover_image'), 'cover');
@@ -168,7 +168,7 @@ class TourController extends Controller
                 $formattedItinerary[] = $dayData;
             }
         }
-        $tour->itinerary = json_encode($formattedItinerary);
+        $tour->itinerary = $formattedItinerary;
 
         $tour->save();
 
@@ -228,11 +228,11 @@ class TourController extends Controller
         $tour->max_slots = $this->input($request, 'max_slots', $this->input($request, 'max_slots_sb', $tour->max_slots ?? 30));
         $tour->current_booked = $this->input($request, 'current_booked', $this->input($request, 'current_booked_sb', $tour->current_booked ?? 0));
 
-        $tour->includes = json_encode($request->input('includes', []) ?: []);
-        $tour->excludes = json_encode($request->input('excludes', []) ?: []);
-        $tour->important_info = json_encode($request->input('important_info', []) ?: []);
-        $tour->faqs = json_encode($request->input('faqs', []) ?: []);
-        $tour->features = json_encode($request->input('features', []) ?: []);
+        $tour->includes = $this->listInput($request, 'includes');
+        $tour->excludes = $this->listInput($request, 'excludes');
+        $tour->important_info = $this->listInput($request, 'important_info');
+        $tour->faqs = $this->listInput($request, 'faqs');
+        $tour->features = $this->listInput($request, 'features');
 
         $coverReplaced = false;
 
@@ -282,7 +282,7 @@ class TourController extends Controller
                 $formattedItinerary[] = $dayData;
             }
         }
-        $tour->itinerary = json_encode($formattedItinerary);
+        $tour->itinerary = $formattedItinerary;
 
         $tour->save();
 
@@ -309,6 +309,27 @@ class TourController extends Controller
         $this->images->deleteMany($orphans);
 
         return redirect()->route('admin.tours.index')->with('success', 'ট্যুর ডিলিট করা হয়েছে।');
+    }
+
+    /**
+     * Read a repeatable list field, dropping blank rows.
+     *
+     * The model casts these columns to array, so they must be assigned as
+     * arrays. Encoding here as well would store double-encoded JSON, which
+     * makes the attribute read back as a string and breaks any @foreach.
+     */
+    private function listInput(Request $request, string $key): array
+    {
+        $values = $request->input($key, []);
+
+        if (! is_array($values)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            $values,
+            fn ($value) => is_scalar($value) ? trim((string) $value) !== '' : $value !== null
+        ));
     }
 
     /**
