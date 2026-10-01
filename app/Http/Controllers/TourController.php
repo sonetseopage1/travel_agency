@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tour;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class TourController extends Controller
 {
@@ -11,6 +12,25 @@ class TourController extends Controller
     {
         $query = null;
         $tours = collect([]);
+
+        // Years the month filter can offer, taken from real departures plus a
+        // little either side, so the list is never empty on a thin dataset.
+        $currentYear = (int) now()->year;
+        $availableYears = Tour::whereNotNull('departure_date')
+            ->distinct()
+            ->orderByDesc('departure_date')
+            ->pluck('departure_date')
+            ->map(fn ($date) => (int) Carbon::parse($date)->year)
+            ->unique()
+            ->sortDesc()
+            ->values();
+
+        $availableYears = $availableYears
+            ->merge([$currentYear, $currentYear + 1])
+            ->filter(fn ($year) => $year >= $currentYear - 1)
+            ->unique()
+            ->sortDesc()
+            ->values();
 
         if (class_exists(Tour::class)) {
             $query = Tour::where('status', 'published');
@@ -27,7 +47,43 @@ class TourController extends Controller
                 $query->where('price_per_person', '<=', $request->price_max);
             }
 
-            $tours = $query->orderBy('departure_date', 'asc')->paginate(9);
+            // Travel window. Both ends are optional: a tour departing on or
+            // after date_from and returning on or before date_to. An open end
+            // means the customer did not care about that side.
+            //
+            // A tour that returns after date_to is excluded even if it departs
+            // inside the window, because the customer needs the whole trip to
+            // fit. A tour with no dates at all is excluded from any dated
+            // search, since it cannot be confirmed to fit.
+            if ($request->filled('date_from') || $request->filled('date_to')) {
+                $query->whereNotNull('departure_date');
+
+                if ($request->filled('date_from')) {
+                    $query->whereDate('departure_date', '>=', $request->date_from);
+                }
+
+                if ($request->filled('date_to')) {
+                    // A missing return date means the tour has no fixed end, so
+                    // it cannot be ruled out by an upper bound.
+                    $query->where(function ($q) use ($request) {
+                        $q->whereNull('return_date')
+                            ->orWhereDate('return_date', '<=', $request->date_to);
+                    });
+                }
+            }
+
+            // A month on its own means "any year", so the year is only applied
+            // when one was actually chosen.
+            if ($request->filled('month')) {
+                $query->whereNotNull('departure_date')
+                    ->whereMonth('departure_date', (int) $request->month);
+
+                if ($request->filled('year')) {
+                    $query->whereYear('departure_date', (int) $request->year);
+                }
+            }
+
+            $tours = $query->orderBy('departure_date', 'asc')->paginate(9)->withQueryString();
         }
 
         if ($tours->isEmpty()) {
@@ -119,7 +175,7 @@ class TourController extends Controller
             ]);
         }
 
-        return view('frontend.tours.index', compact('tours'));
+        return view('frontend.tours.index', compact('tours', 'availableYears', 'currentYear'));
     }
 
     public function show($slug)

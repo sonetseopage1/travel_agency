@@ -9,10 +9,11 @@ use App\Models\GalleryPhoto;
 use App\Models\Review;
 use App\Models\Tour;
 use Illuminate\Http\Request;
+use Illuminate\Support\ViewErrorBag;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $tours = collect([]);
         $destinations = collect([]);
@@ -171,13 +172,17 @@ class HomeController extends Controller
             ]);
         }
 
-        return view('frontend.home', compact(
+        return view('frontend.home', array_merge(compact(
             'tours',
             'destinations',
             'reviews',
             'galleryPhotos',
             'blogPosts',
-        ));
+        ), [
+            // The contact form on this page reads it, and the view must not
+            // depend on the session middleware having run.
+            'errors' => $request->session()->get('errors') ?? new ViewErrorBag,
+        ]));
     }
 
     public function contactSubmit(Request $request)

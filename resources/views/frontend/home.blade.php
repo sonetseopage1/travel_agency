@@ -71,6 +71,12 @@
                             <a href="{{ route('tours.show', $tour->slug ?? 'coxs-bazar') }}"
                                 class="hover:text-teal-700">{{ $tour->title ?? '' }}</a>
                         </h3>
+                        @if ($tour->travel_date_label ?? null)
+                            <p class="text-sm text-slate-600 dark:text-slate-300 mt-3">
+                                <span class="font-semibold">ভ্রমণের তারিখ:</span>
+                                {{ $tour->travel_date_label }}
+                            </p>
+                        @endif
                         <div class="flex items-center gap-4 text-sm text-slate-500 dark:text-slate-400 mt-3">
                             <span>🗓️ {{ $tour->duration_days ?? 0 }} দিন</span>
                             <span>💺 বাকি {{ $left }}</span>

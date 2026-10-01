@@ -6,6 +6,7 @@ use App\Models\Concerns\HasImageUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
 class Tour extends Model
@@ -115,6 +116,78 @@ class Tour extends Model
     public function destination(): BelongsTo
     {
         return $this->belongsTo(Destination::class);
+    }
+
+    /**
+     * The travel window as a single readable range, in Bangla.
+     *
+     * Every card and the detail page need the same wording, so the formatting
+     * lives here rather than being repeated per view. A tour with no
+     * departure date returns null and the caller omits the row entirely,
+     * rather than showing a bare "TBD".
+     */
+    public function getTravelDateLabelAttribute(): ?string
+    {
+        if (empty($this->departure_date)) {
+            return null;
+        }
+
+        $start = Carbon::parse($this->departure_date);
+
+        // A return date is only meaningful when it lands on or after the
+        // departure; a reversed pair is treated as absent rather than shown
+        // as an impossible range.
+        $end = empty($this->return_date) ? null : Carbon::parse($this->return_date);
+        $end = ($end && ! $end->lessThan($start)) ? $end : null;
+
+        // A single day is one date, not a "10 - 10" range.
+        if (! $end) {
+            return $start->format('j F Y');
+        }
+
+        if ($end->isSameDay($start)) {
+            return $start->format('j F Y');
+        }
+
+        // Same month and year reads better collapsed: "10 - 13 November 2026".
+        if ($start->isSameMonth($end) && $start->isSameYear($end)) {
+            return $start->format('j').' - '.$end->format('j F Y');
+        }
+
+        if ($start->isSameYear($end)) {
+            return $start->format('j F').' - '.$end->format('j F Y');
+        }
+
+        return $start->format('j F Y').' - '.$end->format('j F Y');
+    }
+
+    /**
+     * The same window in a compact form for tight card layouts, where the full
+     * range would wrap onto a third line.
+     */
+    public function getTravelDateShortAttribute(): ?string
+    {
+        if (empty($this->departure_date)) {
+            return null;
+        }
+
+        $start = Carbon::parse($this->departure_date);
+        $end = empty($this->return_date) ? null : Carbon::parse($this->return_date);
+        $end = ($end && ! $end->lessThan($start)) ? $end : null;
+
+        if (! $end) {
+            return $start->format('j M y');
+        }
+
+        if ($end->isSameDay($start)) {
+            return $start->format('j M y');
+        }
+
+        if ($start->isSameMonth($end) && $start->isSameYear($end)) {
+            return $start->format('j').'-'.$end->format('j M y');
+        }
+
+        return $start->format('j M').' - '.$end->format('j M y');
     }
 
     public function bookings(): HasMany

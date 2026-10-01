@@ -38,6 +38,9 @@
             <div class="flex flex-wrap items-center gap-6 text-white/85 mt-5">
                 <span class="text-amber-400 font-bold">★ {{ $tour->rating ?? '4.8' }} ({{ $tour->review_count ?? 0 }}টি রিভিউ)</span>
                 <span>🗓️ {{ $tour->duration_days ?? 0 }} দিন / {{ $tour->duration_nights ?? max(($tour->duration_days ?? 1) - 1, 0) }} রাত</span>
+                @if ($tour->travel_date_label ?? null)
+                    <span class="font-semibold">ভ্রমণ: {{ $tour->travel_date_label }}</span>
+                @endif
                 <span>💺 {{ $left }}টি সিট বাকি</span>
             </div>
         </div>
@@ -195,11 +198,11 @@
                     <div class="text-4xl font-extrabold text-teal-700 mt-1">
                         ৳{{ number_format($tour->price_per_person ?? 0) }}
                     </div>
-                    @if (! empty($tour->departure_date))
+                    @if ($tour->travel_date_label ?? null)
                         <p class="text-sm text-slate-500 mt-2">
                             ভ্রমণের তারিখ:
                             <span class="font-semibold text-slate-700 dark:text-slate-200">
-                                {{ \Illuminate\Support\Carbon::parse($tour->departure_date)->format('d M Y') }}
+                                {{ $tour->travel_date_label }}
                             </span>
                         </p>
                     @endif
