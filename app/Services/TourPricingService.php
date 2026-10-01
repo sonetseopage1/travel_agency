@@ -265,14 +265,28 @@ class TourPricingService
 
     /**
      * Return cabin inventory when a booking stops occupying it.
+     *
+     * The column is unsigned, so a plain decrement that went below zero would
+     * abort the whole transaction. The counts can drift out of step — a booking
+     * created before its tier had inventory, or a tier edited by hand — and
+     * releasing must never be the thing that breaks a cancellation.
      */
-    public function releaseCabins(TourPricingTier $tier, int $cabins): void
+    public function releaseCabins(?TourPricingTier $tier, int $cabins): void
     {
-        if ($tier->cabins_total === null || $cabins <= 0) {
+        // Nullable because a booking can outlive the tier it was priced
+        // against, in which case there is no inventory to give back.
+        if ($tier === null || $tier->cabins_total === null || $cabins <= 0) {
             return;
         }
 
-        $tier->decrement('cabins_booked', max(0, $cabins));
+        $booked = (int) $tier->cabins_booked;
+        $releasable = min($booked, $cabins);
+
+        if ($releasable <= 0) {
+            return;
+        }
+
+        $tier->decrement('cabins_booked', $releasable);
     }
 
     /**

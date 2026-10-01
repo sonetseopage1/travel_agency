@@ -1,16 +1,46 @@
 @extends('layouts.frontend')
 
-@section('title', 'বুকিং সফল — '.\App\Models\Setting::string('site_name'))
+@php
+    // Blade's inline @section form cannot reliably parse the nested quotes a
+    // ternary needs, so the value is built first.
+    $pageHeading = ($booking->is_approved ? 'বুকিং কনফার্মড' : 'বুকিং আবেদন গ্রহণ');
+@endphp
+
+@section('title', $pageHeading.' — '.\App\Models\Setting::string('site_name'))
 
 @section('content')
 
     <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-        <div class="w-20 h-20 rounded-full bg-emerald-500 text-white flex items-center justify-center text-4xl mx-auto">✓</div>
+        {{-- Submitted and approved are deliberately different states. Right
+             after submitting nothing is confirmed, and saying "সফল হয়েছে"
+             reads as though the seat is already secured. --}}
+        @if ($booking->is_approved)
+            <div class="w-20 h-20 rounded-full bg-emerald-500 text-white flex items-center justify-center text-4xl mx-auto">✓</div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold mt-8">আপনার বুকিং নিশ্চিত হয়েছে!</h1>
+            <p class="text-slate-600 dark:text-slate-300 mt-4 leading-8">
+                নিচে থেকে আপনার রসিদটি ডাউনলোড করে রাখতে পারেন। ভ্রমণের তারিখের আগে যেকোনো সময়
+                এই পেজটি দিয়ে আপনার বুকিং যাচাই করতে পারবেন।
+            </p>
+        @else
+            <div class="w-20 h-20 rounded-full bg-amber-500 text-white flex items-center justify-center text-4xl mx-auto">✓</div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold mt-8">আবেদনটি গ্রহণ করা হয়েছে</h1>
+            <p class="text-slate-600 dark:text-slate-300 mt-4 leading-8">
+                {{ session('success', 'আপনার বুকিং আবেদনটি সফলভাবে জমা হয়েছে। আমাদের প্রতিনিধি আপনার সাথে খুব দ্রুত যোগাযোগ করবেন।') }}
+            </p>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-4 max-w-xl mx-auto">
+                আপনার আবেদনটি এখনো অনুমোদনের অপেক্ষায় আছে। আমাদের প্রতিনিধি আপনার সাথে যোগাযোগ করে
+                অনুমোদন জানাবেন এবং রসিদের লিংকটি আপনাকে দিয়ে দেবেন।
+            </p>
+        @endif
 
-        <h1 class="text-3xl sm:text-4xl font-extrabold mt-8">বুকিং সফল হয়েছে!</h1>
-        <p class="text-slate-600 dark:text-slate-300 mt-4 leading-8">
-            {{ session('success', 'আপনার বুকিং সফল হয়েছে! শীঘ্রই আমরা আপনার সাথে যোগাযোগ করব।') }}
-        </p>
+        @if ($booking->is_approved)
+            <div class="mt-8">
+                <a href="{{ route('bookings.receipt.download', ['token' => $booking->receiptToken()]) }}"
+                    class="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold transition">
+                    <span aria-hidden="true">⬇</span> রসিদ ডাউনলোড করুন (PDF)
+                </a>
+            </div>
+        @endif
 
         <div class="mt-10 text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8">
             <h2 class="text-xl font-extrabold mb-6">বুকিং সারসংক্ষেপ</h2>
@@ -19,6 +49,16 @@
                 <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                     <dt class="text-slate-500">বুকিং নম্বর</dt>
                     <dd class="font-semibold">#{{ $booking->id ?? 'BT-00000' }}</dd>
+                </div>
+                <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+                    <dt class="text-slate-500">বর্তমান অবস্থা</dt>
+                    <dd class="font-semibold">
+                        @if ($booking->is_approved)
+                            <span class="text-emerald-600">অনুমোদিত</span>
+                        @else
+                            <span class="text-amber-600">অনুমোদনের অপেক্ষায়</span>
+                        @endif
+                    </dd>
                 </div>
                 <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                     <dt class="text-slate-500">ট্যুর</dt>

@@ -25,7 +25,14 @@ Route::get('/blog/{post:slug}', [BlogController::class, 'show'])->name('blog.sho
 Route::get('/booking', [BookingController::class, 'create'])->name('bookings.create');
 Route::post('/booking', [BookingController::class, 'store'])->name('bookings.store');
 Route::post('/booking/validate-promo', [BookingController::class, 'validatePromo'])->name('bookings.validate-promo');
-Route::get('/booking/{id}/success', [BookingController::class, 'success'])->name('bookings.success');
+
+// Keyed on the receipt token rather than the booking id. Ids are sequential, so
+// an id-based link would let anyone who guessed a number read another
+// customer's name, phone number and price.
+Route::get('/booking/receipt/{token}', [BookingController::class, 'receipt'])
+    ->name('bookings.receipt');
+Route::get('/booking/receipt/{token}/download', [BookingController::class, 'downloadReceipt'])
+    ->name('bookings.receipt.download');
 Route::post('/contact', [HomeController::class, 'contactSubmit'])->name('contact.submit');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

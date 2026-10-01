@@ -257,6 +257,12 @@
                         class="input" placeholder="পরিবর্তন না">
                 </div>
 
+                <div>
+                    <label for="admin_note" class="label">প্রতিষ্ঠানের নোট (রসিদে দেখাবে)</label>
+                    <textarea id="admin_note" name="admin_note" rows="3"
+                        class="input" placeholder="যেমন: বিকাশে পেমেন্ট পাওয়া গেছে">{{ $booking->admin_note }}</textarea>
+                </div>
+
                 <p class="text-xs text-slate-500 leading-6">
                     বুকিং বাতিল করলে ট্যুরের সিট স্বয়ংক্রিয়ভাবে ফেরত আসবে।
                 </p>
@@ -266,8 +272,84 @@
                     আপডেট করুন
                 </button>
             </form>
+
+            {{-- The receipt link is released on approval. Sticking the status
+                 at confirmed or completed stamps the approval, and this block
+                 appears with the link to hand to the customer. --}}
+            <div class="mt-5 pt-5 border-t border-slate-200 dark:border-slate-800">
+                <h4 class="font-bold text-sm mb-3">রসিদ ও গ্রাহকের লিংক</h4>
+
+                @if ($booking->is_approved)
+                    <div class="rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 p-4 mb-3">
+                        <p class="text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+                            ✓ অনুমোদিত{{ $booking->approved_at ? ' — '.$booking->approved_at->format('d M Y, h:i A') : '' }}
+                        </p>
+                    </div>
+
+                    <label for="receiptLink" class="label">গ্রাহককে এই লিংকটি দিন</label>
+                    <div class="flex gap-2">
+                        <input id="receiptLink" readonly value="{{ $booking->receiptUrl() }}"
+                            class="input font-mono text-xs" onclick="this.select()">
+                        <button type="button" id="copyReceipt"
+                            class="shrink-0 px-3 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                            কপি
+                        </button>
+                    </div>
+                    <p id="copyReceiptDone" class="hidden mt-2 text-xs text-emerald-600 font-semibold">লিংক কপি হয়েছে।</p>
+
+                    <div class="flex gap-2 mt-3">
+                        <a href="{{ route('bookings.receipt', ['token' => $booking->receiptToken()]) }}"
+                            target="_blank" rel="noopener"
+                            class="flex-1 text-center px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                            গ্রাহকের পেজ দেখুন
+                        </a>
+                        <a href="{{ route('bookings.receipt.download', ['token' => $booking->receiptToken()]) }}"
+                            class="flex-1 text-center px-3 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold transition">
+                            PDF রসিদ
+                        </a>
+                    </div>
+                @else
+                    <p class="text-xs text-slate-500 leading-6">
+                        স্ট্যাটাস <span class="font-semibold">Confirmed</span> বা
+                        <span class="font-semibold">Completed</span> করলে এই বুকিং অনুমোদিত হিসেবে চিহ্নিত হবে
+                        এবং গ্রাহকের জন্য রসিদ ডাউনলোড লিংক তৈরি হবে।
+                    </p>
+                @endif
+            </div>
         </div>
     </aside>
 </div>
+
+@section('scripts')
+    <script>
+        (function () {
+            const copyBtn = document.getElementById('copyReceipt');
+            const link = document.getElementById('receiptLink');
+            const done = document.getElementById('copyReceiptDone');
+            if (!copyBtn || !link) return;
+
+            copyBtn.addEventListener('click', async () => {
+                // Selecting the field is the fallback, because the async
+                // clipboard API needs a secure context and admin is often
+                // reached over plain http on a local network.
+                try {
+                    await navigator.clipboard.writeText(link.value);
+                } catch (e) {
+                    link.removeAttribute('readonly');
+                    link.select();
+                    document.execCommand('copy');
+                    link.setAttribute('readonly', 'readonly');
+                }
+
+                copyBtn.textContent = 'কপি হয়েছে';
+                done.classList.remove('hidden');
+                window.setTimeout(() => {
+                    copyBtn.textContent = 'কপি';
+                    done.classList.add('hidden');
+                }, 2000);
+            });
+        })();
+    </script>
+@endsection
 
 @endsection

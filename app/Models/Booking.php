@@ -53,11 +53,14 @@ class Booking extends Model
         'payment_method',
         'transaction_id',
         'special_notes',
+        'admin_note',
+        'approved_at',
     ];
 
     protected function casts(): array
     {
         return [
+            'approved_at' => 'datetime',
             'guest_count' => 'integer',
             'adult_count' => 'integer',
             'child_count' => 'integer',
@@ -85,6 +88,46 @@ class Booking extends Model
     public function pricingTier(): BelongsTo
     {
         return $this->belongsTo(TourPricingTier::class);
+    }
+
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    /**
+     * True once an admin has approved the booking.
+     *
+     * A submitted booking is only an application, so the receipt is withheld
+     * until this is true. A cancelled booking never counts as approved, even if
+     * it was approved before being cancelled.
+     */
+    public function getIsApprovedAttribute(): bool
+    {
+        return $this->approved_at !== null && $this->status !== 'cancelled';
+    }
+
+    /**
+     * The token that identifies this booking in a receipt link.
+     *
+     * Bookings created before the token column existed get one on first use,
+     * so an old link never dead-ends.
+     */
+    public function receiptToken(): string
+    {
+        if (empty($this->receipt_token)) {
+            $this->forceFill(['receipt_token' => bin2hex(random_bytes(32))])->save();
+        }
+
+        return $this->receipt_token;
+    }
+
+    /**
+     * The URL the admin shares once the booking is approved.
+     */
+    public function receiptUrl(): string
+    {
+        return route('bookings.receipt', ['token' => $this->receiptToken()]);
     }
 
     /**

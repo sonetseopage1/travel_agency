@@ -272,6 +272,7 @@ class BookingController extends Controller
             'payment_status' => ['required', Rule::in(Booking::PAYMENT_STATUSES)],
             'payment_method' => 'nullable|string|max:50',
             'transaction_id' => 'nullable|string|max:100',
+            'admin_note' => 'nullable|string|max:2000',
         ], [
             'status.required' => 'বুকিং স্ট্যাটাস নির্বাচন করুন।',
             'status.in' => 'বুকিং স্ট্যাটাসটি সঠিক নয়।',
@@ -305,7 +306,10 @@ class BookingController extends Controller
                     $lockedTour->increment('current_booked', $booking->guest_count);
                     $this->pricing->reserveCabins($tier, (int) $booking->cabin_count);
                 } elseif (! $wasCancelled && $willCancel && $lockedTour) {
-                    $lockedTour->decrement('current_booked', $booking->guest_count);
+                    // current_booked is unsigned, so a decrement below zero
+                    // would abort the cancellation. Clamped the same way the
+                    // cabin count is, in case the two ever drift apart.
+                    $lockedTour->decrement('current_booked', min((int) $lockedTour->current_booked, (int) $booking->guest_count));
                     $this->pricing->releaseCabins($booking->pricingTier()->first(), (int) $booking->cabin_count);
                 }
 
@@ -313,6 +317,26 @@ class BookingController extends Controller
                 $booking->payment_status = $validated['payment_status'];
                 $booking->payment_method = $validated['payment_method'] ?? $booking->payment_method;
                 $booking->transaction_id = $validated['transaction_id'] ?? $booking->transaction_id;
+                $booking->admin_note = $validated['admin_note'] ?? $booking->admin_note;
+
+                // Approval is what releases the receipt, so it is stamped here
+                // rather than inferred from the status alone: a booking can sit
+                // at 'confirmed' without anyone having formally approved it.
+                if ($newStatus === 'confirmed' || $newStatus === 'completed') {
+                    if ($booking->approved_at === null) {
+                        $booking->approved_at = now();
+                        $booking->approved_by = auth()->id();
+                    }
+                } else {
+                    // Approving is withdrawn along with the approval, so the
+                    // receipt link stops working if the booking is reverted.
+                    $booking->approved_at = null;
+                    $booking->approved_by = null;
+                }
+
+                // Minted on approval so the link is ready to share.
+                $booking->receiptToken();
+
                 $booking->save();
             });
         } catch (InsufficientSeatsException $e) {

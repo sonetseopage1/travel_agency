@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\PromoCode;
 use App\Models\Tour;
 use App\Models\TourPricingTier;
+use App\Services\PdfRenderer;
 use App\Services\TourPricingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Public booking.
@@ -183,8 +185,15 @@ class BookingController extends Controller
             $promoCode->increment('used_count');
         }
 
-        return redirect()->route('bookings.success', $booking->id)
-            ->with('success', 'আপনার বুকিং সফল হয়েছে! শীঘ্রই আমরা আপনার সাথে যোগাযোগ করব।');
+        // The receipt token is minted here so the redirect can go through it,
+        // and so a link is ready the moment an admin approves.
+        $booking->receiptToken();
+
+        // Submitted is not the same as confirmed. The wording has to say the
+        // application is with us, because the seat is not secured until an
+        // admin approves it.
+        return redirect()->route('bookings.receipt', ['token' => $booking->receiptToken()])
+            ->with('success', 'আপনার বুকিং আবেদনটি সফলভাবে জমা হয়েছে। আমাদের প্রতিনিধি আপনার সাথে খুব দ্রুত যোগাযোগ করবেন।');
     }
 
     /**
@@ -354,10 +363,43 @@ class BookingController extends Controller
         return $tiers->first();
     }
 
-    public function success($id): View
+    /**
+     * The customer's view of their own booking, reached through the token the
+     * admin shares.
+     *
+     * This is shown both straight after submitting, when the booking is still
+     * only an application, and later once an admin approves it. That is why it
+     * is the same page in both cases and branches on the approval state.
+     */
+    public function receipt(string $token): View
     {
-        $booking = Booking::with(['tour', 'promoCode', 'guests'])->findOrFail($id);
+        $booking = Booking::with(['tour', 'promoCode', 'guests', 'approver'])
+            ->where('receipt_token', $token)
+            ->firstOrFail();
 
         return view('frontend.bookings.success', compact('booking'));
+    }
+
+    /**
+     * The PDF receipt. Only available once an admin has approved, because
+     * before then the amounts are not settled.
+     */
+    public function downloadReceipt(string $token): Response
+    {
+        $booking = Booking::with(['tour', 'promoCode', 'guests', 'approver'])
+            ->where('receipt_token', $token)
+            ->firstOrFail();
+
+        abort_unless($booking->is_approved, 403, 'এই বুকিং এখনো অনুমোদিত হয়নি।');
+
+        $pdf = app(PdfRenderer::class)->render('frontend.bookings.receipt-pdf', compact('booking'));
+
+        // The number in the filename is the reference the customer quotes when
+        // calling, so it has to match the booking, not the token.
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="booking-receipt-'.$booking->id.'.pdf"',
+            'Content-Length' => (string) strlen($pdf),
+        ]);
     }
 }
