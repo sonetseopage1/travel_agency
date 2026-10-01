@@ -167,6 +167,7 @@
                 <div>
                     <label class="label">Price / Person (৳)</label>
                     <input type="number" name="price_per_person" min="0" class="input" value="{{ old('price_per_person', $tour->price_per_person) }}">
+                    <p class="mt-1.5 text-xs text-slate-500">তালিকায় দেখানোর জন্য। নতুন বুকিং নিচের ধরনগুলো থেকে হিসাব হবে।</p>
                 </div>
                 <div>
                     <label class="label">Maximum Slots</label>
@@ -176,6 +177,10 @@
                     <label class="label">Current Booked</label>
                     <input type="number" name="current_booked" min="0" class="input bg-slate-100 dark:bg-slate-800" value="{{ old('current_booked', $tour->current_booked) }}">
                 </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800">
+                @include('admin.tours.partials.pricing-tiers', ['tiersByType' => $tiersByType ?? [], 'prefix' => 'tiers'])
             </div>
         </section>
 

@@ -1,0 +1,12 @@
+ReferenceError: tailwind is not defined
+    at about:blank:2:9
+    at Script.runInContext (node:vm:149:12)
+    at Object.runInContext (node:vm:301:6)
+    at processJavaScript (C:\Users\K. M Imran Hossain\AppData\Local\Temp\kilo\jsdom_env\node_modules\jsdom\lib\jsdom\living\nodes\HTMLScriptElement-impl.js:231:10)
+    at HTMLScriptElementImpl._innerEval (C:\Users\K. M Imran Hossain\AppData\Local\Temp\kilo\jsdom_env\node_modules\jsdom\lib\jsdom\living\nodes\HTMLScriptElement-impl.js:166:5)
+    at C:\Users\K. M Imran Hossain\AppData\Local\Temp\kilo\jsdom_env\node_modules\jsdom\lib\jsdom\living\nodes\HTMLScriptElement-impl.js:107:12
+    at ResourceQueue.push (C:\Users\K. M Imran Hossain\AppData\Local\Temp\kilo\jsdom_env\node_modules\jsdom\lib\jsdom\browser\resources\resource-queue.js:53:16)
+    at HTMLScriptElementImpl._fetchInternalScript (C:\Users\K. M Imran Hossain\AppData\Local\Temp\kilo\jsdom_env\node_modules\jsdom\lib\jsdom\living\nodes\HTMLScriptElement-impl.js:106:21)
+    at HTMLScriptElementImpl._eval (C:\Users\K. M Imran Hossain\AppData\Local\Temp\kilo\jsdom_env\node_modules\jsdom\lib\jsdom\living\nodes\HTMLScriptElement-impl.js:160:12)
+    at HTMLScriptElementImpl._poppedOffStackOfOpenElements (C:\Users\K. M Imran Hossain\AppData\Local\Temp\kilo\jsdom_env\node_modules\jsdom\lib\jsdom\living\nodes\HTMLScriptElement-impl.js:123:10)
+SecurityError: localStorage is not available for opaque origins

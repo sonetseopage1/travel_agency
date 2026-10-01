@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tour;
+use App\Models\TourPricingTier;
 use App\Services\TourImageService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\ViewErrorBag;
 use Illuminate\Validation\Rule;
 
 class TourController extends Controller
@@ -95,9 +98,13 @@ class TourController extends Controller
         ));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        return view('admin.tours.create');
+        return view('admin.tours.create', [
+            // Shared explicitly so the view never depends on the session
+            // middleware having run, which is not true for every caller.
+            'errors' => $request->session()->get('errors') ?? new ViewErrorBag,
+        ]);
     }
 
     /**
@@ -141,6 +148,7 @@ class TourController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_keywords' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            ...$this->tierRules(),
             ...$this->imageRules(),
         ], $this->imageMessages());
 
@@ -200,14 +208,27 @@ class TourController extends Controller
         }
         $tour->itinerary = $formattedItinerary;
 
-        $tour->save();
+        // The tour and its tiers must land together: a tour saved with only some
+        // of its tiers would offer a ৳0 booking for the rest.
+        DB::transaction(function () use ($request, $tour) {
+            $tour->save();
+            $this->syncTiers($request, $tour);
+        });
+
+        $this->syncTourPrice($tour);
 
         return redirect()->route('admin.tours.index')->with('success', 'Tour created successfully!');
     }
 
-    public function edit(Tour $tour)
+    public function edit(Tour $tour, Request $request)
     {
-        return view('admin.tours.edit', compact('tour'));
+        $tour->load('pricingTiers');
+
+        return view('admin.tours.edit', [
+            'tour' => $tour,
+            'tiersByType' => $tour->pricingTiers->keyBy('type'),
+            'errors' => $request->session()->get('errors') ?? new ViewErrorBag,
+        ]);
     }
 
     public function update(Request $request, Tour $tour): RedirectResponse
@@ -234,6 +255,7 @@ class TourController extends Controller
             'meta_title' => 'nullable|string|max:255',
             'meta_keywords' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
+            ...$this->tierRules(),
             ...$this->imageRules(),
         ], $this->imageMessages());
 
@@ -327,6 +349,13 @@ class TourController extends Controller
 
         $this->images->deleteMany(array_filter($orphans));
 
+        DB::transaction(function () use ($request, $tour) {
+            $tour->save();
+            $this->syncTiers($request, $tour);
+        });
+
+        $this->syncTourPrice($tour);
+
         return back()->with('success', 'ট্যুর আপডেট সফল হয়েছে।');
     }
 
@@ -374,5 +403,135 @@ class TourController extends Controller
     private function input(Request $request, string $key, mixed $fallback): mixed
     {
         return $request->filled($key) ? $request->input($key) : $fallback;
+    }
+
+    /**
+     * Validation rules for the pricing tier block on the create and edit forms.
+     *
+     * @return array<string, array<int, string>>
+     */
+    private function tierRules(): array
+    {
+        $rules = [];
+
+        foreach (TourPricingTier::TYPES as $type) {
+            $key = "tiers.$type";
+            $rules += [
+                "$key.enabled" => 'nullable|boolean',
+                "$key.price_per_adult" => 'nullable|numeric|min:0',
+                "$key.label" => 'nullable|string|max:60',
+                "$key.min_adults" => 'nullable|integer|min:1|max:100',
+                "$key.max_adults" => 'nullable|integer|min:1|max:100',
+                "$key.infant_age_max" => 'nullable|integer|min:0|max:18',
+                "$key.child_age_max" => 'nullable|integer|min:1|max:18',
+                "$key.child_price_percent" => 'nullable|numeric|min:0|max:100',
+                "$key.capacity_per_cabin" => 'nullable|integer|min:1|max:50',
+                "$key.included_cabin_count" => 'nullable|integer|min:0|max:50',
+                "$key.extra_cabin_fee" => 'nullable|numeric|min:0',
+                "$key.cabins_total" => 'nullable|integer|min:0|max:999',
+                "$key.discount_type" => ['nullable', Rule::in(TourPricingTier::DISCOUNT_TYPES)],
+                "$key.discount_value" => 'nullable|numeric|min:0',
+            ];
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Persist the pricing tiers submitted with a tour.
+     *
+     * A tier is stored only when it carries a price. A blank price means the
+     * operator has not configured that option, and offering it would show a
+     * customer a ৳0 booking.
+     *
+     * Ranges that a rule cannot express are corrected here: the adult minimum
+     * can exceed the maximum, and the two age bands can cross, which would leave
+     * a guest with no rate at all. Existing tiers are updated rather than
+     * recreated, so their booked-cabin counters survive.
+     */
+    private function syncTiers(Request $request, Tour $tour): void
+    {
+        $submitted = $request->input('tiers', []);
+
+        if (! is_array($submitted)) {
+            return;
+        }
+
+        foreach (TourPricingTier::TYPES as $sortOrder => $type) {
+            $data = $submitted[$type] ?? null;
+
+            if (! is_array($data)) {
+                continue;
+            }
+
+            $price = $data['price_per_adult'] ?? null;
+
+            if ($price === null || trim((string) $price) === '') {
+                continue;
+            }
+
+            // min_adults above max_adults would make the tier unusable, so the
+            // minimum is pulled down to the maximum rather than left inverted.
+            $maxAdults = max(1, (int) ($data['max_adults'] ?? 1));
+            $minAdults = max(1, min($maxAdults, (int) ($data['min_adults'] ?? 1)));
+
+            // The bands must not cross, or a guest could fall into neither.
+            $infantAge = max(0, min(17, (int) ($data['infant_age_max'] ?? 3)));
+            $childAge = max($infantAge + 1, min(18, (int) ($data['child_age_max'] ?? 8)));
+
+            $discountType = in_array($data['discount_type'] ?? '', TourPricingTier::DISCOUNT_TYPES, true)
+                ? $data['discount_type']
+                : 'none';
+
+            $discountValue = (float) ($data['discount_value'] ?? 0);
+
+            if ($discountType === 'percent') {
+                $discountValue = min(100, $discountValue);
+            } elseif ($discountType === 'none') {
+                $discountValue = 0;
+            }
+
+            $cabinsTotal = ($data['cabins_total'] ?? '') === '' || ($data['cabins_total'] ?? null) === null
+                ? null
+                : max(0, (int) $data['cabins_total']);
+
+            // Keyed on tour_id + type, so a retry after a partial failure updates
+            // the existing row instead of colliding with the unique index.
+            $tour->pricingTiers()->updateOrCreate(
+                ['type' => $type],
+                [
+                    'label' => ($data['label'] ?? '') === '' ? null : trim((string) $data['label']),
+                    'price_per_adult' => (float) $price,
+                    'min_adults' => $minAdults,
+                    'max_adults' => $maxAdults,
+                    'infant_age_max' => $infantAge,
+                    'child_age_max' => $childAge,
+                    'child_price_percent' => max(0, min(100, (float) ($data['child_price_percent'] ?? 50))),
+                    'capacity_per_cabin' => max(1, (int) ($data['capacity_per_cabin'] ?? 4)),
+                    'included_cabin_count' => max(0, (int) ($data['included_cabin_count'] ?? 1)),
+                    'extra_cabin_fee' => (float) ($data['extra_cabin_fee'] ?? 0),
+                    'discount_type' => $discountType,
+                    'discount_value' => $discountValue,
+                    'cabins_total' => $cabinsTotal,
+                    'is_active' => $request->boolean("tiers.$type.enabled"),
+                    'sort_order' => $sortOrder,
+                ]
+            );
+        }
+    }
+
+    /**
+     * Keep the tour-level price aligned with the cheapest bookable tier, so the
+     * figure shown in listings is a price a customer can actually pay.
+     */
+    private function syncTourPrice(Tour $tour): void
+    {
+        $tour->refresh()->load('pricingTiers');
+        $starting = $tour->bookableTiers()->first();
+
+        if ($starting) {
+            $tour->price_per_person = (float) $starting->price_per_adult;
+            $tour->save();
+        }
     }
 }

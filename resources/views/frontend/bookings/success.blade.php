@@ -33,19 +33,77 @@
                     <dd class="font-semibold">{{ $booking->customer_phone ?? '—' }}</dd>
                 </div>
                 <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                    <dt class="text-slate-500">যাত্রীর সংখ্যা</dt>
-                    <dd class="font-semibold">{{ $booking->guest_count ?? 0 }} জন</dd>
-                </div>
-                <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                    <dt class="text-slate-500">সাবটোটাল</dt>
+                    <dt class="text-slate-500">মোট যাত্রী</dt>
                     <dd class="font-semibold">
-                        ৳{{ number_format((float) ($booking->subtotal ?? 0) > 0 ? $booking->subtotal : ($booking->total_price ?? 0)) }}
+                        {{ $booking->guest_count ?? 0 }} জন
+                        @if ($booking->pricing_tier_type ?? null)
+                            <span class="text-xs text-slate-500">({{ ucfirst($booking->pricing_tier_type) }})</span>
+                        @endif
                     </dd>
                 </div>
+
+                {{-- The party split, so a customer can see why the total is what
+                     it is. Adults are counted; each child is listed with its age. --}}
+                @if (($booking->adult_count ?? 0) > 0 || ($booking->child_count ?? 0) > 0 || ($booking->infant_count ?? 0) > 0)
+                    <div class="border-b border-slate-200 dark:border-slate-800 pb-4 space-y-2">
+                        <div class="flex justify-between text-sm">
+                            <dt class="text-slate-500">প্রাপ্তবয়স্ক</dt>
+                            <dd class="font-semibold">{{ $booking->adult_count ?? 0 }} জন</dd>
+                        </div>
+                        @if (($booking->child_count ?? 0) > 0)
+                            <div class="flex justify-between text-sm">
+                                <dt class="text-slate-500">শিশু</dt>
+                                <dd class="font-semibold">{{ $booking->child_count }} জন</dd>
+                            </div>
+                        @endif
+                        @if (($booking->infant_count ?? 0) > 0)
+                            <div class="flex justify-between text-sm">
+                                <dt class="text-slate-500">বিনামূল্যে শিশু</dt>
+                                <dd class="font-semibold">{{ $booking->infant_count }} জন</dd>
+                            </div>
+                        @endif
+                        @foreach ($booking->guests ?? [] as $child)
+                            <div class="flex justify-between text-xs text-slate-500">
+                                <dt>
+                                    শিশু {{ $child->sort_order + 1 }} (বয়স {{ $child->age }})
+                                    @if ($child->type === 'infant')
+                                        · বিনামূল্যে
+                                    @endif
+                                </dt>
+                                <dd>৳{{ number_format($child->line_total) }}</dd>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                @if (($booking->cabin_count ?? 0) > 0)
+                    <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+                        <dt class="text-slate-500">কেবিন</dt>
+                        <dd class="font-semibold">
+                            {{ $booking->cabin_count }}টি
+                            @if ((float) $booking->extra_cabin_amount > 0)
+                                <span class="text-emerald-600">(৳{{ number_format($booking->extra_cabin_amount) }})</span>
+                            @endif
+                        </dd>
+                    </div>
+                @endif
+
+                <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+                    <dt class="text-slate-500">যাত্রীর খরচ</dt>
+                    <dd class="font-semibold">৳{{ number_format($booking->subtotal ?? 0) }}</dd>
+                </div>
+
+                @if ((float) ($booking->tier_discount_amount ?? 0) > 0)
+                    <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+                        <dt class="text-slate-500">ছাড়</dt>
+                        <dd class="font-semibold text-emerald-600">−৳{{ number_format($booking->tier_discount_amount) }}</dd>
+                    </div>
+                @endif
+
                 @if ((float) ($booking->discount_amount ?? 0) > 0)
                     <div class="flex justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                         <dt class="text-slate-500">
-                            ছাড়
+                            প্রোমো ছাড়
                             @if ($booking->promo_code)
                                 <span class="font-mono text-emerald-600">({{ $booking->promo_code }})</span>
                             @endif

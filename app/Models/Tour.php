@@ -6,6 +6,7 @@ use App\Models\Concerns\HasImageUrl;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class Tour extends Model
 {
@@ -124,6 +125,42 @@ class Tour extends Model
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function pricingTiers(): HasMany
+    {
+        return $this->hasMany(TourPricingTier::class);
+    }
+
+    /**
+     * Tiers a customer may actually book: active only, ordered cheapest-first so
+     * the default selection is the entry-level option.
+     *
+     * Reuses an eager-loaded relation when the caller has already loaded it,
+     * which avoids a second query on the listing pages.
+     *
+     * @return Collection<int, TourPricingTier>
+     */
+    public function bookableTiers()
+    {
+        $relation = $this->relationLoaded('pricingTiers') ? $this->pricingTiers : null;
+
+        $tiers = $relation ?? $this->pricingTiers()->active()->ordered()->get();
+
+        return collect($tiers)
+            ->filter(fn (TourPricingTier $tier) => $tier->is_active)
+            ->sortBy('price_per_adult')
+            ->values();
+    }
+
+    public function getStartingPriceAttribute(): float
+    {
+        return (float) ($this->bookableTiers()->first()?->price_per_adult ?? $this->price_per_person ?? 0);
+    }
+
+    public function getHasPricingTiersAttribute(): bool
+    {
+        return $this->bookableTiers()->isNotEmpty();
     }
 
     public function getAvailableSlotsAttribute(): int

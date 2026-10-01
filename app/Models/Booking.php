@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Booking extends Model
 {
@@ -31,6 +33,16 @@ class Booking extends Model
         'customer_email',
         'customer_phone',
         'guest_count',
+        'pricing_tier_id',
+        'pricing_tier_type',
+        'pricing_tier_label',
+        'adult_rate',
+        'adult_count',
+        'child_count',
+        'infant_count',
+        'cabin_count',
+        'extra_cabin_amount',
+        'tier_discount_amount',
         'subtotal',
         'discount_amount',
         'promo_code',
@@ -47,6 +59,13 @@ class Booking extends Model
     {
         return [
             'guest_count' => 'integer',
+            'adult_count' => 'integer',
+            'child_count' => 'integer',
+            'infant_count' => 'integer',
+            'cabin_count' => 'integer',
+            'adult_rate' => 'decimal:2',
+            'extra_cabin_amount' => 'decimal:2',
+            'tier_discount_amount' => 'decimal:2',
             'subtotal' => 'decimal:2',
             'discount_amount' => 'decimal:2',
             'total_price' => 'decimal:2',
@@ -63,8 +82,31 @@ class Booking extends Model
         return $this->belongsTo(PromoCode::class);
     }
 
+    public function pricingTier(): BelongsTo
+    {
+        return $this->belongsTo(TourPricingTier::class);
+    }
+
+    /**
+     * The children on this booking. Adults are counted, not listed.
+     */
+    public function guests(): HasMany
+    {
+        return $this->hasMany(BookingGuest::class)->orderBy('sort_order')->orderBy('id');
+    }
+
     public function getHasDiscountAttribute(): bool
     {
-        return (float) $this->discount_amount > 0;
+        // Either lever counts as a discount: the operator's tier discount or a
+        // promo code on top of it.
+        return (float) $this->discount_amount > 0 || (float) $this->tier_discount_amount > 0;
+    }
+
+    /**
+     * Bookings that hold inventory: anything not cancelled.
+     */
+    public function scopeOccupying(Builder $query): Builder
+    {
+        return $query->where('status', '!=', 'cancelled');
     }
 }

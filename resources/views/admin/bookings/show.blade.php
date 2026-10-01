@@ -82,10 +82,48 @@
                     <dd class="font-semibold">{{ $booking->customer_phone ?? '-' }}</dd>
                 </div>
                 <div>
-                    <dt class="small-label">যাত্রীর সংখ্যা</dt>
-                    <dd class="font-semibold">{{ $booking->guest_count ?? 1 }} জন</dd>
+                    <dt class="small-label">মোট যাত্রী</dt>
+                    <dd class="font-semibold">
+                        {{ $booking->guest_count ?? 1 }} জন
+                        @if ($booking->pricing_tier_type ?? null)
+                            <span class="text-xs text-slate-500">({{ ucfirst($booking->pricing_tier_type) }})</span>
+                        @endif
+                    </dd>
                 </div>
+                @if ($booking->pricing_tier_type ?? null)
+                    <div>
+                        <dt class="small-label">প্রাপ্তবয়স্ক / শিশু / ফ্রি শিশু</dt>
+                        <dd class="font-semibold">
+                            {{ $booking->adult_count ?? 0 }} / {{ $booking->child_count ?? 0 }} /
+                            {{ $booking->infant_count ?? 0 }}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="small-label">কেবিন</dt>
+                        <dd class="font-semibold">
+                            {{ $booking->cabin_count ?? 0 }}টি
+                            @if ((float) $booking->extra_cabin_amount > 0)
+                                <span class="text-emerald-600">(৳{{ number_format($booking->extra_cabin_amount) }})</span>
+                            @endif
+                        </dd>
+                    </div>
+                @endif
             </dl>
+
+            @if ($booking->guests->isNotEmpty())
+                <div class="mt-4 border-t border-slate-200 dark:border-slate-800 pt-4">
+                    <p class="small-label mb-2">শিশুদের বয়স</p>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach ($booking->guests as $child)
+                            <span
+                                class="px-3 py-1.5 rounded-lg text-xs font-semibold
+                                    {{ $child->type === 'infant' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' }}">
+                                বয়স {{ $child->age }} · ৳{{ number_format($child->line_total) }}
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </div>
 
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
@@ -112,8 +150,10 @@
                         </dd>
                     </div>
                     <div>
-                        <dt class="small-label">প্রতি জনের দাম</dt>
-                        <dd class="font-semibold">৳ {{ number_format($booking->tour->price_per_person ?? 0) }}</dd>
+                        <dt class="small-label">বুকিংয়ের সময় প্রাপ্তবয়স্কর হার</dt>
+                        <dd class="font-semibold">
+                            ৳ {{ number_format($booking->adult_rate ?? $booking->tour->price_per_person ?? 0) }}
+                        </dd>
                     </div>
                     <div>
                         <dt class="small-label">যাত্রা</dt>
